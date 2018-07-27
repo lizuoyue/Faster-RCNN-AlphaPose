@@ -39,4 +39,4 @@ if __name__ == '__main__':
 	net = resnetv1(num_layers = 152)
 	net.create_architecture('TEST', 81, tag = 'default', anchor_scales = [2,4,8,16,32])
 	saver = tf.train.Saver()
-	saver.restore(sess, '../output/res152/coco_2014_train+coco_2014_valminusminival/default/res152.meta')
+	saver.restore(sess, '../output/res152/coco_2014_train+coco_2014_valminusminival/default/res152.ckpt')
