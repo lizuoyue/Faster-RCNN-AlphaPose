@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import tensorflow as tf
 import numpy as np
-import sys, time, socket
+import os, sys, time, socket
 
 import _init_paths
 from nets.resnet_v1 import resnetv1
