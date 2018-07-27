@@ -27,16 +27,16 @@ def setAvaiGPUs(num_gpus = 1):
 	return
 
 if __name__ == '__main__':
-	assert(len(sys.argv) == 3)
-	num_gpus = int(sys.argv[2])
+	assert(len(sys.argv) == 2)
+	num_gpus = int(sys.argv[1])
 	if socket.gethostname() == 'ait-server-03':
 		setAvaiGPUs(num_gpus)
 
 	tfconfig = tf.ConfigProto(allow_soft_placement = True)
 	tfconfig.gpu_options.allow_growth = True
-	sess = tf.Session(config=tfconfig)
+	sess = tf.Session(config = tfconfig)
 
 	net = resnetv1(num_layers = 152)
 	net.create_architecture('TEST', 81, tag = 'default', anchor_scales = [2,4,8,16,32])
 	saver = tf.train.Saver()
-	saver.restore(sess, './output/res152/coco_2014_train+coco_2014_valminusminival/default/res152.ckpt')
+	saver.restore(sess, '../output/res152/coco_2014_train+coco_2014_valminusminival/default/res152.ckpt')
