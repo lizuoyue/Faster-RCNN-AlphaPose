@@ -2,11 +2,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tools._init_paths
 import tensorflow as tf
 import numpy as np
 import sys, time
 
+import _init_paths
 from lib.nets.resnet_v1 import resnetv1
 
 def setAvaiGPUs(num_gpus = 1):
