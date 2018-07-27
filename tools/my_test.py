@@ -7,7 +7,7 @@ import numpy as np
 import sys, time
 
 import _init_paths
-from lib.nets.resnet_v1 import resnetv1
+from nets.resnet_v1 import resnetv1
 
 def setAvaiGPUs(num_gpus = 1):
 	import subprocess as sp
