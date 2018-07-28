@@ -1,0 +1,7 @@
++ echo Logging output to experiments/logs/test_res152_coco_2014_train+coco_2014_valminusminival_.txt.2018-07-28_13-28-57
+Logging output to experiments/logs/test_res152_coco_2014_train+coco_2014_valminusminival_.txt.2018-07-28_13-28-57
++ set +x
++ [[ ! -z '' ]]
++ CUDA_VISIBLE_DEVICES=0
++ time python ./tools/test_net.py --imdb coco_2014_minival --model output/res152/coco_2014_train+coco_2014_valminusminival/default/res152_faster_rcnn_iter_490000.ckpt --cfg experiments/cfgs/res152.yml --net res152 --set ANCHOR_SCALES '[4,8,16,32]' ANCHOR_RATIOS '[0.5,1,2]'
+./experiments/scripts/test_faster_rcnn.sh: line 67: time: command not found

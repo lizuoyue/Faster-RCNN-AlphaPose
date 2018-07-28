@@ -1,0 +1,21 @@
++ echo Logging output to experiments/logs/res152_coco_2014_train+coco_2014_valminusminival__res152.txt.2018-07-28_13-30-14
+Logging output to experiments/logs/res152_coco_2014_train+coco_2014_valminusminival__res152.txt.2018-07-28_13-30-14
++ set +x
++ '[' '!' -f output/res152/coco_2014_train+coco_2014_valminusminival/default/res152_faster_rcnn_iter_1190000.ckpt.index ']'
++ [[ ! -z '' ]]
++ CUDA_VISIBLE_DEVICES=0
++ python ./tools/trainval_net.py --weight data/imagenet_weights/res152.ckpt --imdb coco_2014_train+coco_2014_valminusminival --imdbval coco_2014_minival --iters 1190000 --cfg experiments/cfgs/res152.yml --net res152 --set ANCHOR_SCALES '[4,8,16,32]' ANCHOR_RATIOS '[0.5,1,2]' TRAIN.STEPSIZE '[350000]'
+/local/home/zyli/.local/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Traceback (most recent call last):
+  File "./tools/trainval_net.py", line 21, in <module>
+    from nets.vgg16 import vgg16
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/nets/vgg16.py", line 16, in <module>
+    from nets.network import Network
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/nets/network.py", line 18, in <module>
+    from layer_utils.proposal_layer import proposal_layer
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/layer_utils/proposal_layer.py", line 13, in <module>
+    from model.nms_wrapper import nms
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/model/nms_wrapper.py", line 12, in <module>
+    from newnms.gpu_nms import gpu_nms
+ImportError: No module named gpu_nms

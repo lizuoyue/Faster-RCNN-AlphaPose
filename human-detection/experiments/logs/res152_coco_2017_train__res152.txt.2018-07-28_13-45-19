@@ -1,0 +1,159 @@
++ echo Logging output to experiments/logs/res152_coco_2017_train__res152.txt.2018-07-28_13-45-19
+Logging output to experiments/logs/res152_coco_2017_train__res152.txt.2018-07-28_13-45-19
++ set +x
++ '[' '!' -f output/res152/coco_2017_train/default/res152_faster_rcnn_iter_1190000.ckpt.index ']'
++ [[ ! -z '' ]]
++ CUDA_VISIBLE_DEVICES=0
++ python ./tools/trainval_net.py --weight data/imagenet_weights/res152.ckpt --imdb coco_2017_train --imdbval coco_2017_val --iters 1190000 --cfg experiments/cfgs/res152.yml --net res152 --set ANCHOR_SCALES '[4,8,16,32]' ANCHOR_RATIOS '[0.5,1,2]' TRAIN.STEPSIZE '[350000]'
+/local/home/zyli/.local/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Called with args:
+Namespace(cfg_file='experiments/cfgs/res152.yml', imdb_name='coco_2017_train', imdbval_name='coco_2017_val', max_iters=1190000, net='res152', set_cfgs=['ANCHOR_SCALES', '[4,8,16,32]', 'ANCHOR_RATIOS', '[0.5,1,2]', 'TRAIN.STEPSIZE', '[350000]'], tag=None, weight='data/imagenet_weights/res152.ckpt')
+Using config:
+{'ANCHOR_RATIOS': [0.5, 1, 2],
+ 'ANCHOR_SCALES': [4, 8, 16, 32],
+ 'DATA_DIR': '/disks/data4/zyli/AlphaPose/human-detection/data',
+ 'EXP_DIR': 'res152',
+ 'MATLAB': 'matlab',
+ 'MOBILENET': {'DEPTH_MULTIPLIER': 1.0,
+               'FIXED_LAYERS': 5,
+               'REGU_DEPTH': False,
+               'WEIGHT_DECAY': 4e-05},
+ 'PIXEL_MEANS': array([[[102.9801, 115.9465, 122.7717]]]),
+ 'POOLING_MODE': 'crop',
+ 'POOLING_SIZE': 7,
+ 'RESNET': {'FIXED_BLOCKS': 1, 'MAX_POOL': False},
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': '/disks/data4/zyli/AlphaPose/human-detection',
+ 'RPN_CHANNELS': 512,
+ 'TEST': {'BBOX_REG': True,
+          'HAS_RPN': True,
+          'MAX_SIZE': 1000,
+          'MODE': 'nms',
+          'NMS': 0.3,
+          'PROPOSAL_METHOD': 'gt',
+          'RPN_NMS_THRESH': 0.7,
+          'RPN_POST_NMS_TOP_N': 300,
+          'RPN_PRE_NMS_TOP_N': 6000,
+          'RPN_TOP_N': 5000,
+          'SCALES': [600],
+          'SVM': False},
+ 'TRAIN': {'ASPECT_GROUPING': False,
+           'BATCH_SIZE': 256,
+           'BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'BBOX_NORMALIZE_MEANS': [0.0, 0.0, 0.0, 0.0],
+           'BBOX_NORMALIZE_STDS': [0.1, 0.1, 0.2, 0.2],
+           'BBOX_NORMALIZE_TARGETS': True,
+           'BBOX_NORMALIZE_TARGETS_PRECOMPUTED': True,
+           'BBOX_REG': True,
+           'BBOX_THRESH': 0.5,
+           'BG_THRESH_HI': 0.5,
+           'BG_THRESH_LO': 0.0,
+           'BIAS_DECAY': False,
+           'DISPLAY': 20,
+           'DOUBLE_BIAS': False,
+           'FG_FRACTION': 0.25,
+           'FG_THRESH': 0.5,
+           'GAMMA': 0.1,
+           'HAS_RPN': True,
+           'IMS_PER_BATCH': 1,
+           'LEARNING_RATE': 0.001,
+           'MAX_SIZE': 1000,
+           'MOMENTUM': 0.9,
+           'PROPOSAL_METHOD': 'gt',
+           'RPN_BATCHSIZE': 256,
+           'RPN_BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'RPN_CLOBBER_POSITIVES': False,
+           'RPN_FG_FRACTION': 0.5,
+           'RPN_NEGATIVE_OVERLAP': 0.3,
+           'RPN_NMS_THRESH': 0.7,
+           'RPN_POSITIVE_OVERLAP': 0.7,
+           'RPN_POSITIVE_WEIGHT': -1.0,
+           'RPN_POST_NMS_TOP_N': 2000,
+           'RPN_PRE_NMS_TOP_N': 12000,
+           'SCALES': [600],
+           'SNAPSHOT_ITERS': 5000,
+           'SNAPSHOT_KEPT': 3,
+           'SNAPSHOT_PREFIX': 'res152_faster_rcnn',
+           'STEPSIZE': [350000],
+           'SUMMARY_INTERVAL': 180,
+           'TRUNCATED': False,
+           'USE_ALL_GT': True,
+           'USE_FLIPPED': True,
+           'USE_GT': False,
+           'WEIGHT_DECAY': 0.0001},
+ 'USE_GPU_NMS': True}
+loading annotations into memory...
+Done (t=20.78s)
+creating index...
+index created!
+Loaded dataset `coco_2017_train` for training
+Set proposal method: gt
+Appending horizontally-flipped training examples...
+coco_2017_train gt roidb loaded from /disks/data4/zyli/AlphaPose/human-detection/data/cache/coco_2017_train_gt_roidb.pkl
+done
+Preparing training data...
+done
+loading annotations into memory...
+Done (t=28.09s)
+creating index...
+index created!
+236574 roidb entries
+/disks/data4/zyli/AlphaPose/human-detection/output/res152/coco_2017_train/default
+/disks/data4/zyli/AlphaPose/human-detection
+res152
+coco_2017_train
+Output will be saved to `/disks/data4/zyli/AlphaPose/human-detection/output/res152/coco_2017_train/default`
+TensorFlow summaries will be saved to `/disks/data4/zyli/AlphaPose/human-detection/tensorboard/res152/coco_2017_train/default`
+loading annotations into memory...
+Done (t=0.66s)
+creating index...
+index created!
+Loaded dataset `coco_2017_val` for training
+Set proposal method: gt
+Preparing training data...
+wrote gt roidb to /disks/data4/zyli/AlphaPose/human-detection/data/cache/coco_2017_val_gt_roidb.pkl
+done
+loading annotations into memory...
+Done (t=0.54s)
+creating index...
+index created!
+5000 validation roidb entries
+81
+Filtered 2042 roidb entries: 236574 -> 234532
+Filtered 48 roidb entries: 5000 -> 4952
+2018-07-28 13:46:55.454407: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+2018-07-28 13:46:55.454427: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-07-28 13:46:55.454447: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+2018-07-28 13:46:55.454451: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2018-07-28 13:46:55.454455: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2018-07-28 13:46:56.261210: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties: 
+name: GeForce GTX 1080 Ti
+major: 6 minor: 1 memoryClockRate (GHz) 1.582
+pciBusID 0000:04:00.0
+Total memory: 10.91GiB
+Free memory: 10.75GiB
+2018-07-28 13:46:56.261252: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 
+2018-07-28 13:46:56.261260: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y 
+2018-07-28 13:46:56.261269: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:04:00.0)
+Solving...
+/local/home/zyli/.local/lib/python2.7/site-packages/tensorflow/python/ops/gradients_impl.py:95: UserWarning: Converting sparse IndexedSlices to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  "Converting sparse IndexedSlices to a dense Tensor of unknown shape. "
+/disks/data4/zyli/AlphaPose/human-detection/output/res152/coco_2017_train/default
+[]
+350000
+initialize from pretrained model!!!!!!!!!!!!!!!!!!
+Loading initial model weights from data/imagenet_weights/res152.ckpt
+Unsuccessful TensorSliceReader constructor: Failed to get matching files on data/imagenet_weights/res152.ckpt: Not found: data/imagenet_weights
+Traceback (most recent call last):
+  File "./tools/trainval_net.py", line 141, in <module>
+    max_iters=args.max_iters)
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/model/train_val.py", line 398, in train_net
+    sw.train_model(sess, max_iters)
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/model/train_val.py", line 274, in train_model
+    rate, last_snapshot_iter, stepsizes, np_paths, ss_paths = self.initialize(sess)
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/model/train_val.py", line 205, in initialize
+    variables_to_restore = self.net.get_variables_to_restore(variables, var_keep_dic)
+  File "/disks/data4/zyli/AlphaPose/human-detection/tools/../lib/nets/resnet_v1.py", line 162, in get_variables_to_restore
+    if v.name.split(':')[0] in var_keep_dic:
+TypeError: argument of type 'NoneType' is not iterable
