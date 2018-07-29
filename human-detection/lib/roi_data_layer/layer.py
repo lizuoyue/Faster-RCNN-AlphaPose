@@ -18,6 +18,8 @@ from roi_data_layer.minibatch import get_minibatch
 import numpy as np
 import time
 
+import roi_data_layer.minibatch
+
 class RoIDataLayer(object):
   """Fast R-CNN data layer used for training."""
 

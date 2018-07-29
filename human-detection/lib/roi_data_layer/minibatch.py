@@ -16,6 +16,10 @@ import cv2
 from model.config import cfg
 from utils.blob import prep_im_for_blob, im_list_to_blob
 
+_heatmap = {}
+_heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_train2017.json'))
+_heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_val2017.json'))
+
 def get_minibatch(roidb, num_classes):
   """Given a roidb, construct a minibatch sampled from it."""
   num_images = len(roidb)
@@ -60,7 +64,19 @@ def _get_image_blob(roidb, scale_inds):
   im_scales = []
   for i in range(num_images):
     im = cv2.imread(roidb[i]['image'])
-    # img_id = roidb[i]['image'].split('/')[-1].replace('.jpg')
+    ##################
+    dataset = roidb[i]['image'].split('/')[-2]
+    img_id = roidb[i]['image'].split('/')[-1].replace('.jpg')
+    h, w = im.shape[0], im.shape[1]
+    xx, yy = np.meshgrid(np.arange(w), np.arange(h))
+    hm = np.zeros((19, h, w))
+    if img_id in _heatmap[dataset]: ##################################################
+      for j, part in enumerate(_heatmap[dataset][img_id]):
+        for x, y, v in part:
+          hm[j] = np.maximum(hm[j], v / 6000 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 100))
+      hm[-1] = np.load('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.npy' % (dataset, img_id))
+    im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
+    ##################
     if roidb[i]['flipped']:
       im = im[:, ::-1, :]
     target_size = cfg.TRAIN.SCALES[scale_inds[i]]
