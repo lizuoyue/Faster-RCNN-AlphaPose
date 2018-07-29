@@ -77,6 +77,8 @@ def _get_image_blob(roidb, scale_inds):
           hm[j] = np.maximum(hm[j], v / 6000 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 100))
       last = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
       hm[-1] = np.array(last, np.float32).mean(axis = 2)
+    else:
+      print('%s not in %s' % (img_id, dataset))
     im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
     ##################
     if roidb[i]['flipped']:
