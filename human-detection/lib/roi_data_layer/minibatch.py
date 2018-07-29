@@ -75,7 +75,8 @@ def _get_image_blob(roidb, scale_inds):
       for j, part in enumerate(_heatmap[dataset][img_id]):
         for x, y, v in part:
           hm[j] = np.maximum(hm[j], v / 6000 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 100))
-      hm[-1] = np.load('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.npy' % (dataset, img_id))
+      last = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
+      hm[-1] = np.array(last, np.float32).mean(axis = 2)
     im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
     ##################
     if roidb[i]['flipped']:
@@ -94,7 +95,7 @@ def _get_image_blob(roidb, scale_inds):
 if __name__ == '__main__':
   for dataset in ['train2017', 'val2017']:
     for img_id in _heatmap[dataset]:
-      a = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
+      last = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
+      np.array(last, np.float32).mean(axis = 2)
       print(dataset, img_id, a.shape, a.dtype)
-      if not (a[..., 0] == a[..., 1] and a[..., 2] == a[..., 1]):
-        input()
+
