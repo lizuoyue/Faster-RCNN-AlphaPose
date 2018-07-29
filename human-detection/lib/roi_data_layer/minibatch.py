@@ -11,10 +11,10 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-# import numpy.random as npr
+import numpy.random as npr
 import cv2
-# from model.config import cfg
-# from utils.blob import prep_im_for_blob, im_list_to_blob
+from model.config import cfg
+from utils.blob import prep_im_for_blob, im_list_to_blob
 
 import json
 _heatmap = {}
