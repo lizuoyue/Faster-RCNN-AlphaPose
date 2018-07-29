@@ -96,6 +96,8 @@ class resnetv1(Network):
     # Now the base is always fixed during training
     with slim.arg_scope(resnet_arg_scope(is_training=False)):
       net_conv = self._build_base()
+    with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
+      net_conv_hm = self._build_base_hm()
     if cfg.RESNET.FIXED_BLOCKS > 0:
       with slim.arg_scope(resnet_arg_scope(is_training=False)):
         net_conv, _ = resnet_v1.resnet_v1(net_conv,
@@ -104,6 +106,16 @@ class resnetv1(Network):
                                            include_root_block=False,
                                            reuse=reuse,
                                            scope=self._scope)
+      with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
+        net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
+                                           self._blocks_hm,
+                                           global_pool=False,
+                                           include_root_block=False,
+                                           reuse=reuse,
+                                           scope='hm/' + self._scope)
+      out_ch = net_conv.get_shape().as_list()[-1]
+      net_conv = tf.concat([net_conv, net_conv_hm], axis = 3)
+      net_conv = resnet_utils.conv2d_same(net_conv, out_ch, 3, stride=1, scope='hm/merge_conv')
     if cfg.RESNET.FIXED_BLOCKS < 3:
       with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
         net_conv, _ = resnet_v1.resnet_v1(net_conv,
@@ -112,17 +124,6 @@ class resnetv1(Network):
                                            include_root_block=False,
                                            reuse=reuse,
                                            scope=self._scope)
-    with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
-      net_conv_hm = self._build_base_hm()
-      net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
-                                           self._blocks_hm,
-                                           global_pool=False,
-                                           include_root_block=False,
-                                           reuse=reuse,
-                                           scope='hm/' + self._scope)
-      out_ch = net_conv.get_shape().as_list()[-1]
-      net_conv = tf.concat([net_conv, net_conv_hm], axis = 3)
-      net_conv = resnet_utils.conv2d_same(net_conv, out_ch, 3, stride=1, scope='merge_conv')
 
     self._act_summaries.append(net_conv)
     self._layers['head'] = net_conv
@@ -168,9 +169,7 @@ class resnetv1(Network):
       # other numbers are not supported
       raise NotImplementedError
     self._blocks_hm = [resnet_v1_block('block1', base_depth=64, num_units=3, stride=2),
-                       resnet_v1_block('block2', base_depth=128, num_units=4, stride=2),
-                       # use stride 1 for the last conv4 layer
-                       resnet_v1_block('block3', base_depth=256, num_units=6, stride=1)]
+                       resnet_v1_block('block2', base_depth=128, num_units=4, stride=2)]
 
   def get_variables_to_restore(self, variables, var_keep_dic):
     variables_to_restore = []
