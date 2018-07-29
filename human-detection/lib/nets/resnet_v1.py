@@ -24,11 +24,11 @@ def resnet_arg_scope(is_training=True,
                      batch_norm_epsilon=1e-5,
                      batch_norm_scale=True):
   batch_norm_params = {
-    'is_training': False,
+    'is_training': is_training,
     'decay': batch_norm_decay,
     'epsilon': batch_norm_epsilon,
     'scale': batch_norm_scale,
-    'trainable': False,
+    'trainable': True,
     'updates_collections': tf.GraphKeys.UPDATE_OPS
   }
 
