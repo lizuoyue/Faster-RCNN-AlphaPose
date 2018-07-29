@@ -96,3 +96,5 @@ if __name__ == '__main__':
     for img_id in _heatmap[dataset]:
       a = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
       print(dataset, img_id, a.shape, a.dtype)
+      if not (a[..., 0] == a[..., 1] and a[..., 2] == a[..., 1]):
+        input()
