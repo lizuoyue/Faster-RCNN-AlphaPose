@@ -82,8 +82,14 @@ class resnetv1(Network):
       net = resnet_utils.conv2d_same(self._image, 64, 7, stride=2, scope='conv1')
       net = tf.pad(net, [[0, 0], [1, 1], [1, 1], [0, 0]])
       net = slim.max_pool2d(net, [3, 3], stride=2, padding='VALID', scope='pool1')
-
     return net
+
+  def _build_base_hm(self):
+    with tf.variable_scope('hm/' + self._scope, 'hm/' + self._scope):
+      net_hm = resnet_utils.conv2d_same(self._image_hm, 64, 7, stride=2, scope='conv1')
+      net_hm = tf.pad(net_hm, [[0, 0], [1, 1], [1, 1], [0, 0]])
+      net_hm = slim.max_pool2d(net_hm, [3, 3], stride=2, padding='VALID', scope='pool1')
+    return net_hm
 
   def _image_to_head(self, is_training, reuse=False):
     assert (0 <= cfg.RESNET.FIXED_BLOCKS <= 3)
@@ -106,6 +112,15 @@ class resnetv1(Network):
                                            include_root_block=False,
                                            reuse=reuse,
                                            scope=self._scope)
+    with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
+      net_conv_hm = self._build_base_hm()
+      net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
+                                           self._blocks[:-1],
+                                           global_pool=False,
+                                           include_root_block=False,
+                                           reuse=reuse,
+                                           scope='hm/' + self._scope)
+      net_conv += net_conv_hm
 
     self._act_summaries.append(net_conv)
     self._layers['head'] = net_conv

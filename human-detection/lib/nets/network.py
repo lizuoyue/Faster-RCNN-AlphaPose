@@ -227,6 +227,13 @@ class Network(object):
 
     self._score_summaries.update(self._predictions)
 
+    for v in tf.global_variables():
+      print(v.name)
+    print('=================')
+    for v in tf.trainable_variables():
+      print(v.name)
+    quit()
+
     return rois, cls_prob, bbox_pred
 
   def _smooth_l1_loss(self, bbox_pred, bbox_targets, bbox_inside_weights, bbox_outside_weights, sigma=1.0, dim=[1]):
@@ -352,7 +359,8 @@ class Network(object):
 
   def create_architecture(self, mode, num_classes, tag=None,
                           anchor_scales=(8, 16, 32), anchor_ratios=(0.5, 1, 2)):
-    self._image = tf.placeholder(tf.float32, shape=[1, None, None, 22])
+    self._image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
+    self._image_hm = tf.placeholder(tf.float32, shape=[1, None, None, 19])
     self._im_info = tf.placeholder(tf.float32, shape=[3])
     self._gt_boxes = tf.placeholder(tf.float32, shape=[None, 5])
     self._tag = tag

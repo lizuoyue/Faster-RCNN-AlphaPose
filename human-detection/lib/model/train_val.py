@@ -200,7 +200,9 @@ class SolverWrapper(object):
     variables = tf.global_variables()
     # Initialize all variables first
     sess.run(tf.variables_initializer(variables, name='init'))
-    var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,exclusions=['resnet_v1_152/bbox_pred','resnet_v1_152/cls_score','resnet_v1_152/rpn_cls_score','resnet_v1_152/rpn_bbox_pred'])
+    var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,
+      exclusions=['resnet_v1_152/bbox_pred','resnet_v1_152/cls_score','resnet_v1_152/rpn_cls_score','resnet_v1_152/rpn_bbox_pred']
+    )
     # Get the variables to restore, ignoring the variables to fix
     variables_to_restore = self.net.get_variables_to_restore(variables, var_keep_dic)
 
@@ -384,7 +386,7 @@ def filter_roidb(roidb):
 def train_net(network, imdb, roidb, valroidb, output_dir, tb_dir,
               pretrained_model=None,
               max_iters=40000):
-  pretrained_model = None
+
   """Train a Faster R-CNN network."""
   roidb = filter_roidb(roidb)
   valroidb = filter_roidb(valroidb)
