@@ -90,3 +90,10 @@ def _get_image_blob(roidb, scale_inds):
   blob = im_list_to_blob(processed_ims)
 
   return blob, im_scales
+
+
+if __name__ == '__main__':
+  for dataset in ['train', 'val']:
+    for img_id in _heatmap[dataset]:
+      print(dataset, img_id)
+      np.load('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.npy' % (dataset, img_id))
