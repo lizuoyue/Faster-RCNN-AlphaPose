@@ -67,7 +67,7 @@ def _get_image_blob(roidb, scale_inds):
     im = cv2.imread(roidb[i]['image'])
     ##################
     dataset = roidb[i]['image'].split('/')[-2]
-    img_id = roidb[i]['image'].split('/')[-1].replace('.jpg')
+    img_id = roidb[i]['image'].split('/')[-1].replace('.jpg', '')
     h, w = im.shape[0], im.shape[1]
     xx, yy = np.meshgrid(np.arange(w), np.arange(h))
     hm = np.zeros((19, h, w))
