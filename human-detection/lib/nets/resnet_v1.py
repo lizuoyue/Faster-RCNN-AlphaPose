@@ -120,7 +120,7 @@ class resnetv1(Network):
                                            include_root_block=False,
                                            reuse=reuse,
                                            scope='hm/' + self._scope)
-      out_ch = tf.shape(net_conv).as_list()[-1]
+      out_ch = net_conv.get_shape().as_list()[-1]
       net_conv = tf.concat([net_conv, net_conv_hm], axis = 3)
       net_conv = resnet_utils.conv2d_same(net_conv, out_ch, 3, stride=1, scope='merge_conv')
 
