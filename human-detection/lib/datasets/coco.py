@@ -27,6 +27,8 @@ import json
 
 class coco(imdb):
   def __init__(self, image_set, year):
+    print(image_set, year, 'Yeah!!!')
+    input()
     imdb.__init__(self, 'coco_' + year + '_' + image_set)
     # COCO specific config options
     self.config = {'use_salt': True,
