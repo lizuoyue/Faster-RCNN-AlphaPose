@@ -11,8 +11,8 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-import numpy.random as npr
-import cv2
+# import numpy.random as npr
+# import cv2
 # from model.config import cfg
 # from utils.blob import prep_im_for_blob, im_list_to_blob
 
@@ -91,9 +91,8 @@ def _get_image_blob(roidb, scale_inds):
 
   return blob, im_scales
 
-
 if __name__ == '__main__':
-  for dataset in ['train', 'val']:
+  for dataset in ['train2017', 'val2017']:
     for img_id in _heatmap[dataset]:
       print(dataset, img_id)
       np.load('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.npy' % (dataset, img_id))
