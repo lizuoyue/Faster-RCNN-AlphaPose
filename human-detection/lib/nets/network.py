@@ -39,7 +39,7 @@ class Network(object):
 
   def _add_gt_image(self):
     # add back mean
-    image = self._image + cfg.PIXEL_MEANS
+    image = self._image + cfg.PIXEL_MEANS[:, :, 0: 3]
     # BGR to RGB (opencv uses BGR)
     resized = tf.image.resize_bilinear(image, tf.to_int32(self._im_info[:2] / self._im_info[2]))
     self._gt_image = tf.reverse(resized, axis=[-1])
@@ -435,13 +435,14 @@ class Network(object):
   # Extract the head feature maps, for example for vgg16 it is conv5_3
   # only useful during testing mode
   def extract_head(self, sess, image):
-    feed_dict = {self._image: image}
+    feed_dict = {self._image: image[..., :3], self._image_hm: image[..., 3:]}
     feat = sess.run(self._layers["head"], feed_dict=feed_dict)
     return feat
 
   # only useful during testing mode
   def test_image(self, sess, image, im_info):
-    feed_dict = {self._image: image,
+    feed_dict = {self._image: image[..., :3],
+                 self._image_hm: image[..., 3:],
                  self._im_info: im_info}
 
     cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
@@ -452,14 +453,18 @@ class Network(object):
     return cls_score, cls_prob, bbox_pred, rois
 
   def get_summary(self, sess, blobs):
-    feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
+    feed_dict = {self._image: blobs['data'][..., :3],
+                 self._image_hm: blobs['data'][..., 3:],
+                 self._im_info: blobs['im_info'],
                  self._gt_boxes: blobs['gt_boxes']}
     summary = sess.run(self._summary_op_val, feed_dict=feed_dict)
 
     return summary
 
   def train_step(self, sess, blobs, train_op):
-    feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
+    feed_dict = {self._image: blobs['data'][..., :3],
+                 self._image_hm: blobs['data'][..., 3:],
+                 self._im_info: blobs['im_info'],
                  self._gt_boxes: blobs['gt_boxes']}
     rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss, _ = sess.run([self._losses["rpn_cross_entropy"],
                                                                         self._losses['rpn_loss_box'],
@@ -471,7 +476,9 @@ class Network(object):
     return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss
 
   def train_step_with_summary(self, sess, blobs, train_op):
-    feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
+    feed_dict = {self._image: blobs['data'][..., :3],
+                 self._image_hm: blobs['data'][..., 3:],
+                 self._im_info: blobs['im_info'],
                  self._gt_boxes: blobs['gt_boxes']}
     rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss, summary, _ = sess.run([self._losses["rpn_cross_entropy"],
                                                                                  self._losses['rpn_loss_box'],
@@ -484,7 +491,9 @@ class Network(object):
     return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss, summary
 
   def train_step_no_return(self, sess, blobs, train_op):
-    feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
+    feed_dict = {self._image: blobs['data'][..., :3],
+                 self._image_hm: blobs['data'][..., 3:],
+                 self._im_info: blobs['im_info'],
                  self._gt_boxes: blobs['gt_boxes']}
     sess.run([train_op], feed_dict=feed_dict)
 
