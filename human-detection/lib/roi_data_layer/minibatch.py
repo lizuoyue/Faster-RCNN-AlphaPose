@@ -16,6 +16,7 @@ import cv2
 from model.config import cfg
 from utils.blob import prep_im_for_blob, im_list_to_blob
 
+import json
 _heatmap = {}
 _heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_train2017.json'))
 _heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_val2017.json'))
