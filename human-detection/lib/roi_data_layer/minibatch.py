@@ -97,5 +97,5 @@ if __name__ == '__main__':
     for img_id in _heatmap[dataset]:
       last = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
       np.array(last, np.float32).mean(axis = 2)
-      print(dataset, img_id, a.shape, a.dtype)
+      print(dataset, img_id, last.shape, last.dtype)
 
