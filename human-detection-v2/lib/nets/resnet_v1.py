@@ -168,8 +168,7 @@ class resnetv1(Network):
     else:
       # other numbers are not supported
       raise NotImplementedError
-    self._blocks_hm = [resnet_v1_block('block1', base_depth=64, num_units=3, stride=2),
-                       resnet_v1_block('block2', base_depth=128, num_units=4, stride=2)]
+    self._blocks_hm = [resnet_v1_block('block1', base_depth=64, num_units=3, stride=2)]
 
   def get_variables_to_restore(self, variables, var_keep_dic):
     variables_to_restore = []
