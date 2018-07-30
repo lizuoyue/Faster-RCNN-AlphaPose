@@ -113,9 +113,9 @@ class resnetv1(Network):
                                            include_root_block=False,
                                            reuse=reuse,
                                            scope='hm/' + self._scope)
-      out_ch = net_conv.get_shape().as_list()[-1]
-      net_conv = tf.concat([net_conv, net_conv_hm], axis = 3)
-      net_conv = resnet_utils.conv2d_same(net_conv, out_ch, 3, stride=1, scope='hm/merge_conv')
+        out_ch = net_conv.get_shape().as_list()[-1]
+        net_conv = tf.concat([net_conv, net_conv_hm], axis = 3)
+        net_conv = resnet_utils.conv2d_same(net_conv, out_ch, 3, stride=1, scope='hm/merge_conv')
     if cfg.RESNET.FIXED_BLOCKS < 3:
       with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
         net_conv, _ = resnet_v1.resnet_v1(net_conv,

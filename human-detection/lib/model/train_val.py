@@ -156,7 +156,7 @@ class SolverWrapper(object):
         train_op = self.optimizer.apply_gradients(gvs)
 
       # We will handle the snapshots ourselves
-      self.saver = tf.train.Saver(max_to_keep=100000)
+      self.saver = tf.train.Saver(max_to_keep=5)
       # Write the train and validation information to tensorboard
       self.writer = tf.summary.FileWriter(self.tbdir, sess.graph)
       self.valwriter = tf.summary.FileWriter(self.tbvaldir)

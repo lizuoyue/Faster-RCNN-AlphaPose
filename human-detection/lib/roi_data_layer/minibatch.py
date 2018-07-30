@@ -70,13 +70,11 @@ def _get_image_blob(roidb, scale_inds):
     img_id = roidb[i]['image'].split('/')[-1].replace('.jpg', '')
     h, w = im.shape[0], im.shape[1]
     xx, yy = np.meshgrid(np.arange(w), np.arange(h))
-    hm = np.zeros((19, h, w))
+    hm = np.zeros((18, h, w))
     if img_id in _heatmap[dataset]: ##################################################
       for j, part in enumerate(_heatmap[dataset][img_id]):
         for x, y, v in part:
           hm[j] = np.maximum(hm[j], v / 6000 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 100))
-      last = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
-      hm[-1] = np.array(last, np.float32).mean(axis = 2)
     else:
       print('%s not in %s' % (img_id, dataset))
     im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
@@ -93,11 +91,4 @@ def _get_image_blob(roidb, scale_inds):
   blob = im_list_to_blob(processed_ims)
 
   return blob, im_scales
-
-if __name__ == '__main__':
-  for dataset in ['train2017', 'val2017']:
-    for img_id in _heatmap[dataset]:
-      last = cv2.imread('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_%s/%s.png' % (dataset, img_id))
-      np.array(last, np.float32).mean(axis = 2)
-      print(dataset, img_id, last.shape, last.dtype)
 
