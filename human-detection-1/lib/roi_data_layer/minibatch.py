@@ -18,8 +18,8 @@ from utils.blob import prep_im_for_blob, im_list_to_blob
 
 import json
 _heatmap = {}
-_heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_train2017.json'))
-_heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/heatmap/heatmap_val2017.json'))
+_heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
+_heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
 
 def get_minibatch(roidb, num_classes):
   """Given a roidb, construct a minibatch sampled from it."""
