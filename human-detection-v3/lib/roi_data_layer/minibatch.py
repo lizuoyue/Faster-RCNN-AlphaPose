@@ -71,12 +71,14 @@ def _get_image_blob(roidb, scale_inds):
     h, w = im.shape[0], im.shape[1]
     xx, yy = np.meshgrid(np.arange(w), np.arange(h))
     hm = np.zeros((18, h, w))
-    # if img_id in _heatmap[dataset]: ##################################################
-    #   for j, part in enumerate(_heatmap[dataset][img_id]):
-    #     for x, y, v in part:
-    #       hm[j] = np.maximum(hm[j], v / 6000 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 100))
-    # else:
-    #   print('%s not in %s' % (img_id, dataset))
+    if img_id in _heatmap[dataset]: ##################################################
+      for j, part in enumerate(_heatmap[dataset][img_id]):
+        for x, y, v in part:
+          if v < 500:
+            continue
+          hm[j] = np.maximum(hm[j], v / 6000 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 100))
+    else:
+      print('%s not in %s' % (img_id, dataset))
     im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
     ##################
     if roidb[i]['flipped']:
