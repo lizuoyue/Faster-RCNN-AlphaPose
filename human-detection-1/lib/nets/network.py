@@ -233,6 +233,7 @@ class Network(object):
     for v in tf.trainable_variables():
       print(v.name)
     print('=========================================================================')
+    quit()
 
     return rois, cls_prob, bbox_pred
 
