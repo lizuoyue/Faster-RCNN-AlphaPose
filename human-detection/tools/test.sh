@@ -6,4 +6,4 @@ while true; do
 		break
 	fi
 done
-echo "dashabi"
+CUDA_VISIBLE_DEVICES=3 python demo-alpha-pose.py --outputpath=coco_output --inputlist=img_list.txt
