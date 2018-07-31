@@ -37,14 +37,14 @@ _heatmap = {}
 _heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
 _heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
 
-NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt.meta',),'res101': ('res101_faster_rcnn_iter_*.ckpt.meta',),'res152':('res152_faster_rcnn_iter_*.ckpt.meta',)}
+NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt.meta',),'res101': ('res101_faster_rcnn_iter_*.ckpt.meta',),'res152':('res152_faster_rcnn_iter_25000.ckpt',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2017_train',)}
 
 def atoi(text):
     return int(text) if text.isdigit() else text
 
 def natural_keys(text):
-    return [ atoi(c) for c in re.split('(\d+)', text) ]
+    return [atoi(c) for c in re.split('(\d+)', text)]
 
 def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=0.5):
     """Draw detected bounding boxes."""
@@ -150,11 +150,11 @@ if __name__ == '__main__':
         os.mkdir(outputpath)
         os.mkdir(outposepath)
 
-    tfmodels = glob.glob(tfmodel)
-    tfmodels.sort(key = natural_keys)
-    tfmodel = tfmodels[-1]
+    # tfmodels = glob.glob(tfmodel)
+    # tfmodels.sort(key = natural_keys)
+    # tfmodel = tfmodels[-1]
  
-    if not os.path.isfile(tfmodel):
+    if not os.path.isfile(tfmodel + '.meta'):
         raise IOError(('{:s} not found.\nDid you download the proper networks from '
                        'our server and place them properly?').format(tfmodel + '.meta'))
 
