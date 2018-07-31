@@ -150,13 +150,9 @@ if __name__ == '__main__':
         os.mkdir(outputpath)
         os.mkdir(outposepath)
 
-    print(tfmodel)
     tfmodels = glob.glob(tfmodel)
     tfmodels.sort(key = natural_keys)
-    print(tfmodels)
-    # tfmodel = tfmodels[-1]
-    print(tfmodels[-1])
-    quit()
+    tfmodel = tfmodels[-1].replace('.meta', '')
  
     if not os.path.isfile(tfmodel + '.meta'):
         raise IOError(('{:s} not found.\nDid you download the proper networks from '
