@@ -227,12 +227,10 @@ class Network(object):
 
     self._score_summaries.update(self._predictions)
 
-    # for v in tf.global_variables():
-    #   print(v.name)
-    print('========================== Trainable Variables ==========================')
-    for v in tf.trainable_variables():
+    print('========================== Global Variables ==========================')
+    for v in tf.global_variables():
       print(v.name)
-    print('=========================================================================')
+    print('======================================================================')
 
     return rois, cls_prob, bbox_pred
 
