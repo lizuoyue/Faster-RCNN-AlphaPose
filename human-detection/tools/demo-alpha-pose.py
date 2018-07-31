@@ -37,7 +37,7 @@ _heatmap = {}
 _heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
 _heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
 
-NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt.meta',),'res101': ('res101_faster_rcnn_iter_*.ckpt.meta',),'res152':('res152_faster_rcnn_iter_25000.ckpt',)}
+NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt.meta',),'res101': ('res101_faster_rcnn_iter_*.ckpt.meta',),'res152':('res152_faster_rcnn_iter_*.ckpt.meta',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2017_train',)}
 
 def atoi(text):
@@ -150,9 +150,13 @@ if __name__ == '__main__':
         os.mkdir(outputpath)
         os.mkdir(outposepath)
 
-    # tfmodels = glob.glob(tfmodel)
-    # tfmodels.sort(key = natural_keys)
+    print(tfmodel)
+    tfmodels = glob.glob(tfmodel)
+    tfmodels.sort(key = natural_keys)
+    print(tfmodels)
     # tfmodel = tfmodels[-1]
+    print(tfmodels[-1])
+    quit()
  
     if not os.path.isfile(tfmodel + '.meta'):
         raise IOError(('{:s} not found.\nDid you download the proper networks from '
