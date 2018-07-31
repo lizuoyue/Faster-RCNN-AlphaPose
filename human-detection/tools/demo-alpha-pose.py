@@ -37,7 +37,7 @@ _heatmap = {}
 _heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
 _heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
 
-NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt',),'res101': ('res101_faster_rcnn_iter_*.ckpt',),'res152':('res152_faster_rcnn_iter_*.ckpt',)}
+NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt.meta',),'res101': ('res101_faster_rcnn_iter_*.ckpt.meta',),'res152':('res152_faster_rcnn_iter_*.ckpt.meta',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2017_train',)}
 
 def atoi(text):
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     tfmodels.sort(key = natural_keys)
     tfmodel = tfmodels[-1]
  
-    if not os.path.isfile(tfmodel + '.meta'):
+    if not os.path.isfile(tfmodel):
         raise IOError(('{:s} not found.\nDid you download the proper networks from '
                        'our server and place them properly?').format(tfmodel + '.meta'))
 
