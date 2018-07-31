@@ -4,4 +4,5 @@ while true; do
 	if [ '$time' -ge '$set_time' ]; then
 		break
 	fi
+done
 echo 'dashabi'
