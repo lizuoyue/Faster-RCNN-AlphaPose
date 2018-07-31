@@ -172,7 +172,7 @@ if __name__ == '__main__':
  
     num_boxes = 0
     for im_name in tqdm(im_names):
-        #print('Human detection for {}'.format(im_name))
+        print('Human detection for {}'.format(im_name))
         num_boxes=demo(sess, net, im_name, xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,inputpath, mode)
     with h5py.File(os.path.join(outputpath,"test-bbox.h5"), 'w') as hf:
                     hf.create_dataset('xmin', data=np.array(xminarr))
