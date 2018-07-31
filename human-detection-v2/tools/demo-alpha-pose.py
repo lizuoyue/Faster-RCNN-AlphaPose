@@ -31,10 +31,14 @@ from tqdm import tqdm
 from nets.vgg16 import vgg16
 from nets.resnet_v1 import resnetv1
 import h5py
- 
 
-NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',),'res152':('res152.ckpt',)}
-DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2014_train+coco_2014_valminusminival',)}
+import json
+_heatmap = {}
+_heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
+_heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
+
+NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',),'res152':('res152_faster_rcnn_iter_65000.ckpt',)}
+DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2017_train',)}
 
 def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=0.5):
     """Draw detected bounding boxes."""
@@ -59,6 +63,23 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     # Load the demo image
     im_file = os.path.join(imagedir, image_name)
     im = cv2.imread(im_file)
+    ##################
+    dataset = image_name.split('/')[-2]
+    img_id = image_name.split('/')[-1].replace('.jpg', '')
+    h, w = im.shape[0], im.shape[1]
+    xx, yy = np.meshgrid(np.arange(w), np.arange(h))
+    hm = np.ones((18, h, w)) * (-1e9)
+    if img_id in _heatmap[dataset]: ##################################################
+        for j, part in enumerate(_heatmap[dataset][img_id]):
+            for x, y, v in part:
+                if v < 600:
+                    continue
+                hm[j] = np.maximum(hm[j], -((xx - x) ** 2 + (yy - y) ** 2) / 100 + np.log(v / 6000))
+            hm[j] = np.exp(hm[j])
+    else:
+        print('%s not in %s' % (img_id, dataset))
+    im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
+    ##################
 
     # Detect all object classes and regress object bounds
     if mode == 'fast':
@@ -172,7 +193,7 @@ if __name__ == '__main__':
  
     num_boxes = 0
     for im_name in tqdm(im_names):
-        #print('Human detection for {}'.format(im_name))
+        # print('Human detection for {}'.format(im_name))
         num_boxes=demo(sess, net, im_name, xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,inputpath, mode)
     with h5py.File(os.path.join(outputpath,"test-bbox.h5"), 'w') as hf:
                     hf.create_dataset('xmin', data=np.array(xminarr))
