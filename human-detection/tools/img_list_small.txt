@@ -1,0 +1,10 @@
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000494759.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000167122.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000117719.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000549136.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000261061.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000190853.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000071226.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000113867.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000485071.jpg
+/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/000000101884.jpg
