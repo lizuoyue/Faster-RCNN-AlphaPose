@@ -194,7 +194,7 @@ class SolverWrapper(object):
     variables = tf.global_variables()
     # Initialize all variables first
     sess.run(tf.variables_initializer(variables, name='init'))
-    var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model
+    var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,
       exclusions=['hm', 'resnet_v1_152/bbox_pred','resnet_v1_152/cls_score','resnet_v1_152/rpn_cls_score','resnet_v1_152/rpn_bbox_pred']
     )
     # Get the variables to restore, ignoring the variables to fix
