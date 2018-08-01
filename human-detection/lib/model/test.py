@@ -23,6 +23,10 @@ from utils.blob import im_list_to_blob
 from model.config import cfg, get_output_dir
 from model.bbox_transform import clip_boxes, bbox_transform_inv
 
+_heatmap = {}
+_heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
+_heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
+
 def _get_image_blob(im,scale):
   """Converts an image into a network input.
   Arguments:
@@ -184,6 +188,26 @@ def test_net(sess, net, imdb, weights_filename, max_per_image=100, thresh=0.05):
 
   for i in range(num_images):
     im = cv2.imread(imdb.image_path_at(i))
+
+    ##################
+    image_name = imdb.image_path_at(i)
+    dataset = image_name.split('/')[-2]
+    img_id = image_name.split('/')[-1].replace('.jpg', '')
+    h, w = im.shape[0], im.shape[1]
+    xx, yy = np.meshgrid(np.arange(w), np.arange(h))
+    if img_id in _heatmap[dataset]: ##################################################
+        hm = np.ones((18, h, w)) * (-1e9)
+        for j, part in enumerate(_heatmap[dataset][img_id]):
+            for x, y, v in part:
+                if v < 600:
+                    continue
+                hm[j] = np.maximum(hm[j], -((xx - x) ** 2 + (yy - y) ** 2) / 100 + np.log(v / 6000))
+            hm[j] = np.exp(hm[j])
+    else:
+        hm = np.zeros((18, h, w))
+        print('%s not in %s' % (img_id, dataset))
+    im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
+    ##################
 
     _t['im_detect'].tic()
     scores, boxes = im_detect(sess, net, im)
