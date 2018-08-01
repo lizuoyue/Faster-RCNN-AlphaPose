@@ -106,7 +106,7 @@ def im_detect(sess, net, im):
     bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1])
     if cfg.TEST.BBOX_REG:
       # Apply bounding-box regression deltas
-      box_deltas = bbox_predim_detect
+      box_deltas = bbox_pred
       pred_boxes = bbox_transform_inv(boxes, box_deltas)
       pred_boxes = _clip_boxes(pred_boxes, im.shape)
     else:
