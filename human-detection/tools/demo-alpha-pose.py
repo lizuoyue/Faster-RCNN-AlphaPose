@@ -17,9 +17,9 @@ from __future__ import print_function
 
 import _init_paths
 from model.config import cfg
-from model.test import im_detect#, im_detect_fast
-#from model.nms_wrapper import nms
-from newnms.nms import  soft_nms
+from model.test import im_detect, im_detect_fast
+from model.nms_wrapper import nms
+from newnms.nms import soft_nms
 from utils.timer import Timer
 import tensorflow as tf
 import matplotlib.pyplot as plt
