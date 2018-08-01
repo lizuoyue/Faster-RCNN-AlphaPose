@@ -39,7 +39,7 @@ class Network(object):
 
   def _add_gt_image(self):
     # add back mean
-    image = self._image + cfg.PIXEL_MEANS
+    image = self._image + cfg.PIXEL_MEANS[..., :3]
     # BGR to RGB (opencv uses BGR)
     resized = tf.image.resize_bilinear(image, tf.to_int32(self._im_info[:2] / self._im_info[2]))
     self._gt_image = tf.reverse(resized, axis=[-1])
