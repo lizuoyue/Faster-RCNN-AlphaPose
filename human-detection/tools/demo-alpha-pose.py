@@ -107,8 +107,9 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
                       cls_scores[:, np.newaxis])).astype(np.float32)
     # keep=soft_nms(dets,method=2)
     # dets=keep
-    keep = nms(dets, NMS_THRESH)
-    dets = dets[keep, :]
+    # keep = nms(dets, NMS_THRESH)
+    # dets = dets[keep, :]
+    dets = dets[cls_scores > 0.5]
     if(dets.shape[0]!=0):
         index_file.write("{} {} ".format(image_name,num_boxes+1))
     num_boxes = vis_detections(im, image_name, cls, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=CONF_THRESH)
