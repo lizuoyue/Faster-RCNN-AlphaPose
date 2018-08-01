@@ -23,6 +23,7 @@ from utils.blob import im_list_to_blob
 from model.config import cfg, get_output_dir
 from model.bbox_transform import clip_boxes, bbox_transform_inv
 
+import json
 _heatmap = {}
 _heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
 _heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
