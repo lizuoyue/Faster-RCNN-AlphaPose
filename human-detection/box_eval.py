@@ -20,7 +20,7 @@ if __name__ == '__main__':
 	} for imgId, (x1, y1, x2, y2), score in zip(imgIds, boxes, box_scores)]
 	print(len(res))
 
-	gtCoco = COCO('person_keypoints_val2017.json')
+	gtCoco = COCO('data/coco/annotations/instances_val2017.json') # person_keypoints_val2017.json
 	dtCoco = gtCoco.loadRes(res)
 	cocoEval = COCOeval(gtCoco, dtCoco, 'bbox')
 	cocoEval.evaluate()
