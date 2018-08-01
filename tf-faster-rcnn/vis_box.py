@@ -24,7 +24,7 @@ if __name__ == '__main__':
 			res[imgId] = [d]
 
 	for imgId in set(imgIds):
-		img = Image.open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/%s.jpg' % str(imgId).zfill(12)).convert('RGB')
+		img = Image.open('data/coco/val2017/%s.jpg' % str(imgId).zfill(12)).convert('RGB')
 		draw = ImageDraw.Draw(img)
 		for item in res[imgId]:
 			draw.rectangle(item['bbox'], outline = (255, 0, 0))
