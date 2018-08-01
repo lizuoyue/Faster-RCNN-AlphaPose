@@ -21,7 +21,7 @@ if __name__ == '__main__':
 		if imgId in res:
 			res[imgId].append(d)
 		else:
-			res[imgId] = d
+			res[imgId] = [d]
 
 	for imgId in set(imgIds):
 		img = Image.open('/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/data/coco/val2017/%s.jpg' % str(imgId).zfill(12)).convert('RGB')
