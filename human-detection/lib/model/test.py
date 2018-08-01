@@ -106,13 +106,13 @@ def im_detect(sess, net, im):
     bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1])
     if cfg.TEST.BBOX_REG:
       # Apply bounding-box regression deltas
-      box_deltas = bbox_pred
+      box_deltas = bbox_predim_detect
       pred_boxes = bbox_transform_inv(boxes, box_deltas)
       pred_boxes = _clip_boxes(pred_boxes, im.shape)
     else:
       # Simply repeat the boxes, once for each class
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
-    finalscores.append(scores)
+    finalscores.append(scores)im_detect
     finalpredboxes.append(pred_boxes)
   return np.concatenate((finalscores[0],finalscores[1],finalscores[2])),np.concatenate((finalpredboxes[0],finalpredboxes[1],finalpredboxes[2]))
 

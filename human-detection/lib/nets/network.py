@@ -446,6 +446,7 @@ class Network(object):
     feed_dict = {self._image: image[..., :3],
                  self._image_hm: image[..., 3:],
                  self._im_info: im_info}
+    import cv2
     cv2.imwrite('%d-0.jpg' % aaa, image[0, ..., :3])
     cv2.imwrite('%d-1.jpg' % aaa, np.maximum(np.minimum(np.max(image[0, ..., 3:], axis = 2), 1), 0))
     aaa += 1
