@@ -447,7 +447,7 @@ class Network(object):
                  self._im_info: im_info}
     import cv2
     cv2.imwrite('%d-0.jpg' % self._cnm, image[0, ..., :3])
-    cv2.imwrite('%d-1.jpg' % self._cnm, np.maximum(np.minimum(np.max(image[0, ..., 3:], axis = 2), 1), 0))
+    cv2.imwrite('%d-1.jpg' % self._cnm, 255 * np.maximum(np.minimum(np.max(image[0, ..., 3:], axis = 2), 1), 0))
     self._cnm += 1
 
     cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
