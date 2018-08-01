@@ -112,7 +112,7 @@ def im_detect(sess, net, im):
     else:
       # Simply repeat the boxes, once for each class
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
-    finalscores.append(scores)im_detect
+    finalscores.append(scores)
     finalpredboxes.append(pred_boxes)
   return np.concatenate((finalscores[0],finalscores[1],finalscores[2])),np.concatenate((finalpredboxes[0],finalpredboxes[1],finalpredboxes[2]))
 
