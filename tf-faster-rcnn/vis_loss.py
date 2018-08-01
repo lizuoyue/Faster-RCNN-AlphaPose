@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 
-os.popen('scp ait:/disks/data4/zyli/Faster-RCNN-AlphaPose/human-detection/experiments/logs/res152_coco_2017_train__res152.txt.2018* ./')
-filename = 'res152_coco_2017_train__res152.txt.2018-07-31_16-33-05'
+os.popen('scp ait:/disks/data4/zyli/Faster-RCNN-AlphaPose/tf-faster-rcnn/experiments/logs/res152_coco_2017_train__res152.txt.2018* ./')
+filename = 'res152_coco_2017_train__res152.txt.2018-08-01_16-02-07'
 
 def mov_avg(li, n = 500):
 	assert(len(li) >= n)
@@ -27,7 +27,7 @@ for item in d:
 	plt.plot(np.arange(len(d[item])) * 20 + 10000, d[item], label=item)
 
 plt.title('Training Loss')
-plt.ylim(ymin = 0, ymax = 0.15)
+# plt.ylim(ymin = 0, ymax = 0.15)
 # plt.xlim(xmin = 84000)
 plt.legend(loc='upper right')
 plt.show()
