@@ -74,8 +74,8 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     img_id = image_name.split('/')[-1].replace('.jpg', '')
     h, w = im.shape[0], im.shape[1]
     xx, yy = np.meshgrid(np.arange(w), np.arange(h))
-    hm = np.ones((18, h, w)) * (-1e9)
     if img_id in _heatmap[dataset]: ##################################################
+        hm = np.ones((18, h, w)) * (-1e9)
         for j, part in enumerate(_heatmap[dataset][img_id]):
             for x, y, v in part:
                 if v < 600:
@@ -83,6 +83,7 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
                 hm[j] = np.maximum(hm[j], -((xx - x) ** 2 + (yy - y) ** 2) / 100 + np.log(v / 6000))
             hm[j] = np.exp(hm[j])
     else:
+        hm = np.zeros((18, h, w))
         print('%s not in %s' % (img_id, dataset))
     im = np.concatenate([im, hm.transpose([1, 2, 0])], axis = 2)
     ##################
