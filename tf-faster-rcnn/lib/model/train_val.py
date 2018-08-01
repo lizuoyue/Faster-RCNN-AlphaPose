@@ -102,11 +102,22 @@ class SolverWrapper(object):
 
     return last_snapshot_iter
 
-  def get_variables_in_checkpoint_file(self, file_name):
+  def get_variables_in_checkpoint_file(self, file_name, exclusions):
     try:
       reader = pywrap_tensorflow.NewCheckpointReader(file_name)
       var_to_shape_map = reader.get_variable_to_shape_map()
-      return var_to_shape_map 
+      variables_to_restore = {}
+      var_names = sorted(var_to_shape_map.keys())
+      for var in var_names:
+        excluded = False
+        for exclusion in exclusions:
+          if var.startswith(exclusion):
+            excluded = True
+            print(var)
+            break
+        if not excluded:
+          variables_to_restore[var] = var_to_shape_map[var]
+      return variables_to_restore 
     except Exception as e:  # pylint: disable=broad-except
       print(str(e))
       if "corrupted compressed block contents" in str(e):
