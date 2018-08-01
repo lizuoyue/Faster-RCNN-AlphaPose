@@ -200,13 +200,13 @@ class resnetv1(Network):
 
   def get_variables_to_restore(self, variables, var_keep_dic):
     variables_to_restore = []
-    print(var_keep_dic)
+    # print(var_keep_dic)
     for v in variables:
       # exclude the first conv layer to swap RGB to BGR
       if v.name == (self._scope + '/conv1/weights:0'):
         self._variables_to_fix[v.name] = v
         continue
-      print(v)
+      # print(v)
       if v.name.split(':')[0] in var_keep_dic:
         print('Variables restored: %s' % v.name)
         variables_to_restore.append(v)
