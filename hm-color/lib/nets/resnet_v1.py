@@ -154,7 +154,7 @@ class resnetv1(Network):
     return net_conv, net_conv_hm
 
   def _head_to_tail(self, pool5, pool5_hm, is_training, reuse=False):
-    with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
+    with slim.arg_scope(resnet_arg_scope(is_training=False)):
       fc7, _ = resnet_v1.resnet_v1(pool5,
                                    self._blocks[-1:],
                                    global_pool=False,
