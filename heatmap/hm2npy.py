@@ -3,7 +3,7 @@ from skimage import io
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-import time, os
+import time, os, cv2
 
 colors = [
 	(255, 255, 255), (255, 255,   0), (255,   0, 255), (  0, 255, 255), (  0, 127, 255),
@@ -36,4 +36,4 @@ for i, img_info in enumerate(img_json['images']):
 			hm_c[..., j] += hm[k] * colors[idxs[k]][j]
 	print(i, time.time() - t)
 	hm_c = np.array(np.maximum(np.minimum(hm_c, 255), 0), np.uint8)
-	np.save('heatmap_%s/%s.npy' % (choose, key), hm_c)
+	cv2.imwrite('heatmap_%s/%s.npy' % (choose, key), hm_c)
