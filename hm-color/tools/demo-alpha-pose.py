@@ -18,8 +18,8 @@ from __future__ import print_function
 import _init_paths
 from model.config import cfg
 from model.test import im_detect, im_detect_fast
-#from model.nms_wrapper import nms
-from newnms.nms import  soft_nms
+from model.nms_wrapper import nms
+from newnms.nms import soft_nms
 from utils.timer import Timer
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -30,11 +30,28 @@ from tqdm import tqdm
 
 from nets.vgg16 import vgg16
 from nets.resnet_v1 import resnetv1
-import h5py
- 
+import h5py, glob, re
 
-NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',),'res152':('res152_faster_rcnn_iter_10000.ckpt',)}
+import json
+_heatmap = {}
+_heatmap['train2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_train2017.json'))
+_heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/heatmap_val2017.json'))
+
+NETS = {'vgg16': ('vgg16_faster_rcnn_iter_*.ckpt.meta',),'res101': ('res101_faster_rcnn_iter_*.ckpt.meta',),'res152':('res152_faster_rcnn_iter_*.ckpt.meta',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2017_train',)}
+
+colors = [
+  (255, 255, 255), (255, 255,   0), (255,   0, 255), (  0, 255, 255), (  0, 127, 255),
+  (  0, 255, 127), (255,   0, 127), (255, 127,   0), (127, 255,   0), (127,   0, 255)
+]
+
+idxs = [0, 1, 2, 3, 4, 2, 3, 4, 5, 6, 7, 5, 6, 7, 8, 8, 9, 9]
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    return [atoi(c) for c in re.split('(\d+)', text)]
 
 def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=0.5):
     """Draw detected bounding boxes."""
@@ -59,6 +76,30 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     # Load the demo image
     im_file = os.path.join(imagedir, image_name)
     im = cv2.imread(im_file)
+    ##################
+    dataset = image_name.split('/')[-2]
+    img_id = image_name.split('/')[-1].replace('.jpg', '')
+    file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.png' % (dataset, img_id)
+    if os.path.exists(file_name):
+      hm_c = cv2.imread(file_name)
+    else:
+      h, w = im.shape[0], im.shape[1]
+      xx, yy = np.meshgrid(np.arange(w), np.arange(h))
+      hm = np.ones((18, h, w)) * (-1e9)
+      for j, part in enumerate(_heatmap[dataset][img_id]):
+        for x, y, v in part:
+          if v < 600:
+            continue
+          hm[j] = np.maximum(hm[j], -((xx - x) ** 2 + (yy - y) ** 2) / 100 + np.log(v / 6000))
+        hm[j] = np.exp(hm[j])
+      hm_c = np.zeros((3, h, w))
+      for j in range(3):
+        for k in range(18):
+          hm_c[j] += hm[k] * colors[idxs[k]][j]
+      hm_c = np.array(np.maximum(np.minimum(hm_c, 255), 0), np.float32).transpose([1, 2, 0])
+      cv2.imwrite(file_name, cv2.cvtColor(hm_c, cv2.COLOR_RGB2BGR))
+    im = np.concatenate([im, hm_c], axis = 2)
+    ##################
 
     # Detect all object classes and regress object bounds
     if mode == 'fast':
@@ -67,6 +108,8 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
         scores, boxes = im_detect(sess, net, im)
     # Visualize detections for each class
     CONF_THRESH = 0.1
+    # CONF_THRESH = 0.8
+    # NMS_THRESH = 0.3
 
     # Visualize people
     cls_ind = 1 
@@ -77,6 +120,9 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
                       cls_scores[:, np.newaxis])).astype(np.float32)
     keep=soft_nms(dets,method=2)
     dets=keep
+    # keep = nms(dets, NMS_THRESH)
+    # dets = dets[keep, :]
+    # dets = dets[cls_scores > 0.5]
     if(dets.shape[0]!=0):
         index_file.write("{} {} ".format(image_name,num_boxes+1))
     num_boxes = vis_detections(im, image_name, cls, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=CONF_THRESH)
@@ -122,6 +168,10 @@ if __name__ == '__main__':
     if not os.path.exists(outputpath):
         os.mkdir(outputpath)
         os.mkdir(outposepath)
+
+    tfmodels = glob.glob(tfmodel)
+    tfmodels.sort(key = natural_keys)
+    tfmodel = tfmodels[-1].replace('.meta', '')
  
     if not os.path.isfile(tfmodel + '.meta'):
         raise IOError(('{:s} not found.\nDid you download the proper networks from '
@@ -145,6 +195,7 @@ if __name__ == '__main__':
     net.create_architecture("TEST", 81,
                           tag='default', anchor_scales=[2,4,8, 16, 32])
     saver = tf.train.Saver()
+    print(tfmodel)
     saver.restore(sess, tfmodel)
 
     print('Loaded network {:s}'.format(tfmodel))
@@ -172,7 +223,7 @@ if __name__ == '__main__':
  
     num_boxes = 0
     for im_name in tqdm(im_names):
-        #print('Human detection for {}'.format(im_name))
+        # print('Human detection for {}'.format(im_name))
         num_boxes=demo(sess, net, im_name, xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,inputpath, mode)
     with h5py.File(os.path.join(outputpath,"test-bbox.h5"), 'w') as hf:
                     hf.create_dataset('xmin', data=np.array(xminarr))
