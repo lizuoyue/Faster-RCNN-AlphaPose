@@ -113,7 +113,7 @@ class SolverWrapper(object):
         for exclusion in exclusions:
           if var.startswith(exclusion):
             excluded = True
-            print(var)
+            print('Excluded: ' + var)
             break
         if not excluded:
           variables_to_restore[var] = var_to_shape_map[var]
@@ -132,8 +132,6 @@ class SolverWrapper(object):
       layers = self.net.create_architecture('TRAIN', self.imdb.num_classes, tag='default',
                                             anchor_scales=cfg.ANCHOR_SCALES,
                                             anchor_ratios=cfg.ANCHOR_RATIOS)
-      for v in tf.global_variables():
-        print(v.name, v.shape)
       # Define the loss
       loss = layers['total_loss']
       # Set learning rate and momentum
@@ -203,7 +201,7 @@ class SolverWrapper(object):
     # Initialize all variables first
     sess.run(tf.variables_initializer(variables, name='init'))
     var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,
-      exclusions=['resnet_v1_152/bbox_pred','resnet_v1_152/cls_score','resnet_v1_152/rpn_cls_score','resnet_v1_152/rpn_bbox_pred']
+      exclusions=['hm', 'resnet_v1_152/bbox_pred', 'resnet_v1_152/cls_score']
     )
     # Get the variables to restore, ignoring the variables to fix
     variables_to_restore = self.net.get_variables_to_restore(variables, var_keep_dic)
