@@ -193,7 +193,7 @@ if __name__ == '__main__':
         net = resnetv1(num_layers=152)
     else:
         raise NotImplementedError
-    net.create_architecture("TRAIN", 81,
+    net.create_architecture('TEST', 81,
                           tag='default', anchor_scales=[2,4,8,16,32])
     saver = tf.train.Saver()
     print(tfmodel)

@@ -448,8 +448,7 @@ class Network(object):
   def test_image(self, sess, image, im_info):
     feed_dict = {self._image: image[..., :3],
                  self._image_hm: image[..., 3:],
-                 self._im_info: im_info,
-                 self._gt_boxes: np.zeros((1, 5))}
+                 self._im_info: im_info}
 
     cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
                                                      self._predictions['cls_prob'],
