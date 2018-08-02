@@ -311,11 +311,6 @@ class Network(object):
     rpn_bbox_pred = slim.conv2d(rpn, self._num_anchors * 4, [1, 1], trainable=rpn_is_training,
                                 weights_initializer=initializer,
                                 padding='VALID', activation_fn=None, scope='rpn_bbox_pred')
-    ##########
-    if not rpn_is_training:
-      rpn_bbox_pred = tf.stop_gradient(rpn_bbox_pred)
-      rpn_cls_score = tf.stop_gradient(rpn_cls_score)
-    ##########
     if is_training:
       rois, roi_scores = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
       rpn_labels = self._anchor_target_layer(rpn_cls_score, "anchor")
