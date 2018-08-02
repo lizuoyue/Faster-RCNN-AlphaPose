@@ -98,6 +98,7 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
           hm_c[j] += hm[k] * colors[idxs[k]][j]
       hm_c = np.array(np.maximum(np.minimum(hm_c, 255), 0), np.float32).transpose([1, 2, 0])
       cv2.imwrite(file_name, cv2.cvtColor(hm_c, cv2.COLOR_RGB2BGR))
+    hm_c = np.zeros((h, w, 3))
     im = np.concatenate([im, hm_c], axis = 2)
     ##################
 
@@ -192,7 +193,7 @@ if __name__ == '__main__':
         net = resnetv1(num_layers=152)
     else:
         raise NotImplementedError
-    net.create_architecture("TEST", 81,
+    net.create_architecture("TRAIN", 81,
                           tag='default', anchor_scales=[2,4,8,16,32])
     saver = tf.train.Saver()
     print(tfmodel)
