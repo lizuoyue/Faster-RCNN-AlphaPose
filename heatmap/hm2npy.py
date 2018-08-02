@@ -3,7 +3,7 @@ from skimage import io
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-import time
+import time, os
 
 colors = [
 	(255, 255, 255), (255, 255,   0), (255,   0, 255), (  0, 255, 255), (  0, 127, 255),
