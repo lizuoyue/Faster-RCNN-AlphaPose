@@ -13,6 +13,7 @@ colors = [
 idxs = [0, 1, 2, 3, 4, 2, 3, 4, 5, 6, 7, 5, 6, 7, 8, 8, 9, 9]
 
 choose = 'val2017'
+os.popen('mkdir heatmap_%s' % choose)
 img_json = json.load(open('../../coco2017data/annotations/person_keypoints_%s.json' % choose))
 hm_json = json.load(open('heatmap_%s.json' % choose))
 image_ids = set(list([item['image_id'] for item in img_json['annotations']]))
@@ -35,4 +36,4 @@ for i, img_info in enumerate(img_json['images']):
 			hm_c[..., j] += hm[k] * colors[idxs[k]][j]
 	print(i, time.time() - t)
 	hm_c = np.array(np.maximum(np.minimum(hm_c, 255), 0), np.uint8)
-	np.save('%s.npy' % key, hm_c)
+	np.save('heatmap_%s/%s.npy' % (choose, key), hm_c)
