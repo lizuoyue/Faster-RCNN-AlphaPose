@@ -94,9 +94,9 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     else:    
         scores, boxes = im_detect(sess, net, im)
     # Visualize detections for each class
-    CONF_THRESH = 0.1
-    # CONF_THRESH = 0.8
-    # NMS_THRESH = 0.3
+    # CONF_THRESH = 0.1
+    CONF_THRESH = 0.8
+    NMS_THRESH = 0.3
 
     # Visualize people
     cls_ind = 1 
@@ -105,10 +105,10 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     cls_scores = scores[:, cls_ind]
     dets = np.hstack((cls_boxes,
                       cls_scores[:, np.newaxis])).astype(np.float32)
-    keep=soft_nms(dets,method=2)
-    dets=keep
-    # keep = nms(dets, NMS_THRESH)
-    # dets = dets[keep, :]
+    # keep=soft_nms(dets,method=2)
+    # dets=keep
+    keep = nms(dets, NMS_THRESH)
+    dets = dets[keep, :]
     if(dets.shape[0]!=0):
         index_file.write("{} {} ".format(image_name,num_boxes+1))
     num_boxes = vis_detections(im, image_name, cls, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=CONF_THRESH)
@@ -208,7 +208,7 @@ if __name__ == '__main__':
  
     num_boxes = 0
     for im_name in tqdm(im_names):
-        print('Human detection for {}'.format(im_name))
+        # print('Human detection for {}'.format(im_name))
         num_boxes=demo(sess, net, im_name, xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,inputpath, mode)
     with h5py.File(os.path.join(outputpath,"test-bbox.h5"), 'w') as hf:
                     hf.create_dataset('xmin', data=np.array(xminarr))
