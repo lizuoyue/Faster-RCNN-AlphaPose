@@ -132,6 +132,8 @@ class SolverWrapper(object):
       layers = self.net.create_architecture('TRAIN', self.imdb.num_classes, tag='default',
                                             anchor_scales=cfg.ANCHOR_SCALES,
                                             anchor_ratios=cfg.ANCHOR_RATIOS)
+      for v in tf.global_variables():
+        print(v.name, v.shape)
       # Define the loss
       loss = layers['total_loss']
       # Set learning rate and momentum
