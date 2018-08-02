@@ -39,10 +39,13 @@ class Network(object):
 
   def _add_gt_image(self):
     # add back mean
-    image = self._image + cfg.PIXEL_MEANS
+    image = self._image + cfg.PIXEL_MEANS[..., :3]
+    image_hm = self._image_hm + cfg.PIXEL_MEANS[..., 3:]
     # BGR to RGB (opencv uses BGR)
     resized = tf.image.resize_bilinear(image, tf.to_int32(self._im_info[:2] / self._im_info[2]))
+    resized_hm = tf.image.resize_bilinear(image_hm, tf.to_int32(self._im_info[:2] / self._im_info[2]))
     self._gt_image = tf.reverse(resized, axis=[-1])
+    self._gt_image_hm = tf.reverse(resized_hm, axis=[-1])
 
   def _add_gt_image_summary(self):
     # use a customized visualization function to visualize the boxes
@@ -51,8 +54,12 @@ class Network(object):
     image = tf.py_func(draw_bounding_boxes, 
                       [self._gt_image, self._gt_boxes, self._im_info],
                       tf.float32, name="gt_boxes")
+
+    image_hm = tf.py_func(draw_bounding_boxes, 
+                      [self._gt_image_hm, self._gt_boxes, self._im_info],
+                      tf.float32, name="gt_boxes")
     
-    return tf.summary.image('GROUND_TRUTH', image)
+    return [tf.summary.image('GROUND_TRUTH', image), tf.summary.image('GROUND_TRUTH_HM', image_hm)]
 
   def _add_act_summary(self, tensor):
     tf.summary.histogram('ACT/' + tensor.op.name + '/activations', tensor)
@@ -405,7 +412,8 @@ class Network(object):
 
       val_summaries = []
       with tf.device("/cpu:0"):
-        val_summaries.append(self._add_gt_image_summary())
+        # val_summaries.append(self._add_gt_image_summary())
+        val_summaries.extend(self._add_gt_image_summary())
         for key, var in self._event_summaries.items():
           val_summaries.append(tf.summary.scalar(key, var))
         for key, var in self._score_summaries.items():
