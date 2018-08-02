@@ -215,6 +215,8 @@ class resnetv1(Network):
       if v.name.split(':')[0] in var_keep_dic:
         print('Variables restored: %s' % v.name)
         variables_to_restore.append(v)
+      else:
+        print('Variables not restored: %s' % v.name)
 
     return variables_to_restore
 
