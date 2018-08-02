@@ -219,7 +219,8 @@ class Network(object):
       # build the anchors for the image
       self._anchor_component()
       # region proposal network
-      rois = self._region_proposal(net_conv, is_training, initializer)
+      # rois = self._region_proposal(net_conv, is_training, initializer)
+      rois = self._region_proposal(net_conv, False, initializer)
       # region of interest pooling
       if cfg.POOLING_MODE == 'crop':
         pool5 = self._crop_pool_layer(net_conv, rois, "pool5")
