@@ -224,7 +224,7 @@ class Network(object):
       # region of interest pooling
       if cfg.POOLING_MODE == 'crop':
         pool5 = self._crop_pool_layer(net_conv, rois, "pool5")
-        # pool5_hm = self._crop_pool_layer(net_conv_hm, rois, "pool5_hm")
+        pool5_hm = self._crop_pool_layer(net_conv_hm, rois, "pool5_hm")
       else:
         raise NotImplementedError
 
