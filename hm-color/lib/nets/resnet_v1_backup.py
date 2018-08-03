@@ -47,7 +47,7 @@ def resnet_arg_scope_bn_trainable(is_training=True,
                      batch_norm_decay=0.997,
                      batch_norm_epsilon=1e-5,
                      batch_norm_scale=True):
-  batch_norm_params = {
+  batch_norm_params_trainable = {
     'is_training': is_training,
     'decay': batch_norm_decay,
     'epsilon': batch_norm_epsilon,
@@ -63,8 +63,8 @@ def resnet_arg_scope_bn_trainable(is_training=True,
       trainable=is_training,
       activation_fn=tf.nn.relu,
       normalizer_fn=slim.batch_norm,
-      normalizer_params=batch_norm_params):
-    with arg_scope([slim.batch_norm], **batch_norm_params) as arg_sc:
+      normalizer_params=batch_norm_params_trainable):
+    with arg_scope([slim.batch_norm], **batch_norm_params_trainable) as arg_sc:
       return arg_sc
 
 class resnetv1(Network):
@@ -120,8 +120,6 @@ class resnetv1(Network):
     # Now the base is always fixed during training
     with slim.arg_scope(resnet_arg_scope(is_training=False)):
       net_conv = self._build_base()
-    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
-      net_conv_hm = self._build_base_hm()
     if cfg.RESNET.FIXED_BLOCKS > 0:
       with slim.arg_scope(resnet_arg_scope(is_training=False)):
         net_conv, _ = resnet_v1.resnet_v1(net_conv,
@@ -139,6 +137,7 @@ class resnetv1(Network):
                                            reuse=reuse,
                                            scope=self._scope)
     with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
+      net_conv_hm = self._build_base_hm()
       net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
                                          self._blocks_hm[:-1],
                                          global_pool=False,
@@ -147,9 +146,6 @@ class resnetv1(Network):
                                          scope='hm/' + self._scope)
     self._act_summaries.append(net_conv)
     self._layers['head'] = net_conv
-
-    self._act_summaries.append(net_conv_hm)
-    self._layers['head_hm'] = net_conv_hm
 
     return net_conv, net_conv_hm
 
