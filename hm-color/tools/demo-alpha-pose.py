@@ -6,11 +6,11 @@
 # Written by Xinlei Chen, based on code from Ross Girshick
 # --------------------------------------------------------
 
-"""
+'''
 Demo script showing detections in sample images.
 
 See README.md for installation instructions before running.
-"""
+'''
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -54,7 +54,7 @@ def natural_keys(text):
     return [atoi(c) for c in re.split('(\d+)', text)]
 
 def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=0.5):
-    """Draw detected bounding boxes."""
+    '''Draw detected bounding boxes.'''
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
         return num_boxes
@@ -64,14 +64,14 @@ def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymax
         bbox = dets[i, :4]
         score = dets[i, -1]
         num_boxes = num_boxes+1
-        results.write("{}\n".format(image_name))
-        score_file.write("{}\n".format(score))
+        results.write('{}\n'.format(image_name))
+        score_file.write('{}\n'.format(score))
         xminarr.append(int(round(bbox[0])));yminarr.append(int(round(bbox[1])));xmaxarr.append(int(round(bbox[2])));ymaxarr.append(int(round(bbox[3])))
         
     return num_boxes
 
 def demo(sess,net,image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,imagedir,mode):
-    """Detect object classes in an image using pre-computed object proposals."""
+    '''Detect object classes in an image using pre-computed object proposals.'''
 
     # Load the demo image
     im_file = os.path.join(imagedir, image_name)
@@ -123,26 +123,26 @@ def demo(sess,net,image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,
     dets=keep
 
     if(dets.shape[0]!=0):
-        index_file.write("{} {} ".format(image_name,num_boxes+1))
+        index_file.write('{} {} '.format(image_name,num_boxes+1))
     num_boxes = vis_detections(im, image_name, cls, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=CONF_THRESH)
     if(dets.shape[0]!=0):
-        index_file.write("{}\n".format(num_boxes))
+        index_file.write('{}\n'.format(num_boxes))
     return num_boxes
 
 
 
 
 def parse_args():
-    """Parse input arguments."""
+    '''Parse input arguments.'''
     parser = argparse.ArgumentParser(description='Tensorflow Faster R-CNN demo')
     parser.add_argument('--net', dest='demo_net', help='Network to use [vgg16 res101]',
                         choices=NETS.keys(), default='res152')
     parser.add_argument('--dataset', dest='dataset', help='Trained dataset [pascal_voc pascal_voc_0712]',
                         choices=DATASETS.keys(), default='coco')
-    parser.add_argument('--inputpath', dest='inputpath', help='image-directory', default="")
-    parser.add_argument('--inputlist', dest='inputlist', help='image-list', default="")
-    parser.add_argument('--mode', dest='mode',help='detection mode, fast/normal/accurate', default="normal")
-    parser.add_argument('--outputpath', dest='outputpath',help='output-directory', default="")
+    parser.add_argument('--inputpath', dest='inputpath', help='image-directory', default='')
+    parser.add_argument('--inputlist', dest='inputlist', help='image-list', default='')
+    parser.add_argument('--mode', dest='mode',help='detection mode, fast/normal/accurate', default='normal')
+    parser.add_argument('--outputpath', dest='outputpath',help='output-directory', default='')
     args = parser.parse_args()
 
     return args
@@ -216,15 +216,15 @@ if __name__ == '__main__':
     yminarr=[]
     xmaxarr=[]
     ymaxarr=[]
-    results = open(os.path.join(outputpath,"test-images.txt"), 'w')
-    score_file = open(os.path.join(outputpath,"score-proposals.txt"),'w')
-    index_file = open(os.path.join(outputpath,"index.txt"),'w')
+    results = open(os.path.join(outputpath,'test-images.txt'), 'w')
+    score_file = open(os.path.join(outputpath,'score-proposals.txt'),'w')
+    index_file = open(os.path.join(outputpath,'index.txt'),'w')
  
     num_boxes = 0
     for im_name in tqdm(im_names):
         # print('Human detection for {}'.format(im_name))
         num_boxes=demo(sess, net, im_name, xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,inputpath, mode)
-    with h5py.File(os.path.join(outputpath,"test-bbox.h5"), 'w') as hf:
+    with h5py.File(os.path.join(outputpath,'test-bbox.h5'), 'w') as hf:
                     hf.create_dataset('xmin', data=np.array(xminarr))
                     hf.create_dataset('ymin', data=np.array(yminarr))
                     hf.create_dataset('xmax', data=np.array(xmaxarr))
