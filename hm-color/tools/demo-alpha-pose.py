@@ -76,6 +76,7 @@ def demo(sess,net,image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,
     # Load the demo image
     im_file = os.path.join(imagedir, image_name)
     im = cv2.imread(im_file)
+    print(im_file)
     ##################
     dataset = image_name.split('/')[-2]
     img_id = image_name.split('/')[-1].replace('.jpg', '')
