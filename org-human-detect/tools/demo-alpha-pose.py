@@ -65,8 +65,8 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
         scores, boxes = im_detect_fast(sess, net, im)
     else:    
         scores, boxes = im_detect(sess, net, im)
-    print(scores.shape)
-    print(boxes.shape)
+    print(scores[10:])
+    print(boxes[10:])
     # Visualize detections for each class
     CONF_THRESH = 0.1
 
