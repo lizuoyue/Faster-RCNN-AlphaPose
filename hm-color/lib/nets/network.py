@@ -454,12 +454,25 @@ class Network(object):
                  self._image_hm: image[..., 3:],
                  self._im_info: im_info}
 
-    cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
+    cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions['cls_score'],
                                                      self._predictions['cls_prob'],
                                                      self._predictions['bbox_pred'],
                                                      self._predictions['rois']],
                                                     feed_dict=feed_dict)
     return cls_score, cls_prob, bbox_pred, rois
+
+  def test_image_rpn(self, sess, image, im_info):
+    feed_dict = {self._image: image[..., :3],
+                 self._image_hm: image[..., 3:],
+                 self._im_info: im_info}
+
+    rpn_cls_score, rpn_cls_prob, rpn_cls_pred, rpn_bbox_pred, rois = sess.run([self._predictions['rpn_cls_score_reshape'],
+                                                                               self._predictions['rpn_cls_prob'],
+                                                                               self._predictions['rpn_cls_pred']
+                                                                               self._predictions['rpn_bbox_pred'],
+                                                                               self._predictions['rois']],
+                                                                              feed_dict=feed_dict)
+    return rpn_cls_score, rpn_cls_prob, rpn_cls_pred, rpn_bbox_pred, rois
 
   def get_summary(self, sess, blobs):
     feed_dict = {self._image: blobs['data'][..., :3], self._image_hm: blobs['data'][..., 3:], self._im_info: blobs['im_info'],
