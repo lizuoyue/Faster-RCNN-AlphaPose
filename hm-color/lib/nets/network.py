@@ -471,12 +471,9 @@ class Network(object):
   def train_step(self, sess, blobs, train_op):
     feed_dict = {self._image: blobs['data'][..., :3], self._image_hm: blobs['data'][..., 3:], self._im_info: blobs['im_info'],
                  self._gt_boxes: blobs['gt_boxes']}
-    a, _, _, _ = sess.run([self._predictions["cls_score"],
-                                                     self._predictions['cls_prob'],
-                                                     self._predictions['bbox_pred'],
-                                                     self._predictions['rois']],
-                                                    feed_dict=feed_dict)
+    a, b = sess.run([self._predictions["cls_score"], self._predictions['cls_prob']], feed_dict=feed_dict)
     print(a)
+    print(b)
     rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss, _ = sess.run([self._losses["rpn_cross_entropy"],
                                                                         self._losses['rpn_loss_box'],
                                                                         self._losses['cross_entropy'],
