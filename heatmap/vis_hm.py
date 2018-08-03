@@ -18,7 +18,7 @@ for dataset in ['val2017', 'train2017']:
 	coco = COCO('../../coco2017data/annotations/instances_%s.json' % dataset)
 	imgIds = coco.getImgIds()
 	imgInfos = coco.loadImgs(imgIds)
-	for i, imgId, imgInfo in enumerate(zip(imgIds, imgInfos)):
+	for i, (imgId, imgInfo) in enumerate(zip(imgIds, imgInfos)):
 		print(dataset, i, imgId)
 		imgIdStr = str(imgId).zfill(12)
 		h, w = imgInfo['height'], imgInfo['width']
