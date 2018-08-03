@@ -70,7 +70,7 @@ def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymax
         
     return num_boxes
 
-def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,imagedir, mode):
+def demo(sess,net,image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes,imagedir,mode):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
@@ -83,7 +83,6 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     h, w = im.shape[0], im.shape[1]
     if os.path.exists(file_name):
       hm_c = cv2.imread(file_name)
-      hm_c = cv2.cvtColor(hm_c, cv2.COLOR_BGR2RGB)
     else:
       xx, yy = np.meshgrid(np.arange(w), np.arange(h))
       hm = np.ones((18, h, w)) * (-1e9)
@@ -98,7 +97,7 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
         for k in range(18):
           hm_c[j] += hm[k] * colors[idxs[k]][j]
       hm_c = np.array(np.maximum(np.minimum(hm_c, 255), 0), np.float32).transpose([1, 2, 0])
-      cv2.imwrite(file_name, cv2.cvtColor(hm_c, cv2.COLOR_RGB2BGR))
+      cv2.imwrite(file_name, hm_c)
     im = np.concatenate([im, hm_c], axis = 2)
     ##################
 

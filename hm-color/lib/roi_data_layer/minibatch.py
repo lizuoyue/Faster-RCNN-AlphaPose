@@ -78,7 +78,6 @@ def _get_image_blob(roidb, scale_inds):
     file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.png' % (dataset, img_id)
     if os.path.exists(file_name):
       hm_c = cv2.imread(file_name)
-      hm_c = cv2.cvtColor(hm_c, cv2.COLOR_BGR2RGB)
     else:
       h, w = im.shape[0], im.shape[1]
       xx, yy = np.meshgrid(np.arange(w), np.arange(h))
@@ -94,14 +93,13 @@ def _get_image_blob(roidb, scale_inds):
         for k in range(18):
           hm_c[j] += hm[k] * colors[idxs[k]][j]
       hm_c = np.array(np.maximum(np.minimum(hm_c, 255), 0), np.float32).transpose([1, 2, 0])
-      cv2.imwrite(file_name, cv2.cvtColor(hm_c, cv2.COLOR_RGB2BGR))
+      cv2.imwrite(file_name, hm_c)
     im = np.concatenate([im, hm_c], axis = 2)
     ##################
     if roidb[i]['flipped']:
       im = im[:, ::-1, :]
     target_size = cfg.TRAIN.SCALES[scale_inds[i]]
-    im, im_scale = prep_im_for_blob(im, cfg.PIXEL_MEANS, target_size,
-                    cfg.TRAIN.MAX_SIZE)
+    im, im_scale = prep_im_for_blob(im, cfg.PIXEL_MEANS, target_size, cfg.TRAIN.MAX_SIZE)
     im_scales.append(im_scale)
     processed_ims.append(im)
 
