@@ -47,7 +47,7 @@ def resnet_arg_scope_bn_trainable(is_training=True,
                      batch_norm_decay=0.997,
                      batch_norm_epsilon=1e-5,
                      batch_norm_scale=True):
-  batch_norm_params = {
+  batch_norm_params_trainable = {
     'is_training': is_training,
     'decay': batch_norm_decay,
     'epsilon': batch_norm_epsilon,
@@ -63,8 +63,8 @@ def resnet_arg_scope_bn_trainable(is_training=True,
       trainable=is_training,
       activation_fn=tf.nn.relu,
       normalizer_fn=slim.batch_norm,
-      normalizer_params=batch_norm_params):
-    with arg_scope([slim.batch_norm], **batch_norm_params) as arg_sc:
+      normalizer_params=batch_norm_params_trainable):
+    with arg_scope([slim.batch_norm], **batch_norm_params_trainable) as arg_sc:
       return arg_sc
 
 class resnetv1(Network):
@@ -108,6 +108,13 @@ class resnetv1(Network):
       net = slim.max_pool2d(net, [3, 3], stride=2, padding='VALID', scope='pool1')
     return net
 
+  def _build_base_hm(self):
+    with tf.variable_scope('hm/' + self._scope, 'hm/' + self._scope):
+      net = resnet_utils.conv2d_same(self._image_hm, 64, 7, stride=2, scope='conv1')
+      net = tf.pad(net, [[0, 0], [1, 1], [1, 1], [0, 0]])
+      net = slim.max_pool2d(net, [3, 3], stride=2, padding='VALID', scope='pool1')
+    return net
+
   def _image_to_head(self, is_training, reuse=False):
     assert (0 <= cfg.RESNET.FIXED_BLOCKS <= 3)
     # Now the base is always fixed during training
@@ -135,7 +142,22 @@ class resnetv1(Network):
 
     return net_conv
 
-  def _head_to_tail(self, pool5, is_training, reuse=False):
+  def _image_to_head_hm(self, is_training, reuse=False):
+    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
+      net_conv_hm = self._build_base_hm()
+      net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
+                                         self._blocks_hm[:-1],
+                                         global_pool=False,
+                                         include_root_block=False,
+                                         reuse=reuse,
+                                         scope='hm/' + self._scope)
+    self._act_summaries.append(net_conv_hm)
+    self._layers['head_hm'] = net_conv_hm
+
+    return net_conv_hm
+
+
+  def _head_to_tail(self, pool5, pool5_hm, is_training, reuse=False):
     with slim.arg_scope(resnet_arg_scope(is_training=False)):
       fc7, _ = resnet_v1.resnet_v1(pool5,
                                    self._blocks[-1:],
@@ -145,7 +167,15 @@ class resnetv1(Network):
                                    scope=self._scope)
       # average pooling done by reduce_mean
       fc7 = tf.reduce_mean(fc7, axis=[1, 2])
-    return fc7
+    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
+      fc7_hm, _ = resnet_v1.resnet_v1(pool5_hm,
+                                      self._blocks_hm[-1:],
+                                      global_pool=False,
+                                      include_root_block=False,
+                                      reuse=reuse,
+                                      scope='hm/' + self._scope)
+      fc7_hm = tf.reduce_mean(fc7_hm, axis=[1, 2])
+    return tf.concat([fc7, fc7_hm], axis = -1)
 
   def _decide_blocks(self):
     # choose different blocks for different number of layers
