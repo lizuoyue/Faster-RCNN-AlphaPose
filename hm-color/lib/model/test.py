@@ -32,11 +32,11 @@ def _get_image_blob(im, scale):
     im_scale_factors (list): list of image scales (relative to im) used
       in the image pyramid
   """
-  im, im_scale = prep_im_for_blob(im_orig, cfg.PIXEL_MEANS, scale, cfg.TEST.MAX_SIZE)
+  im_org, im_scale = prep_im_for_blob(im, cfg.PIXEL_MEANS, scale, cfg.TEST.MAX_SIZE)
   im_scale_factors = [im_scale]
  
   # Create a blob to hold the input images
-  blob = im_list_to_blob([im])
+  blob = im_list_to_blob([im_org])
 
   return blob, np.array(im_scale_factors)
 
