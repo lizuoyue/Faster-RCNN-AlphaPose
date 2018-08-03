@@ -466,7 +466,7 @@ class Network(object):
                  self._image_hm: image[..., 3:],
                  self._im_info: im_info}
 
-    rpn_cls_score, rpn_cls_prob, rpn_cls_pred, rpn_bbox_pred, rois = sess.run([self._predictions['rpn_cls_score_reshape'],
+    rpn_cls_score, rpn_cls_prob, rpn_cls_pred, rpn_bbox_pred, rois = sess.run([self._predictions['rpn_cls_score'],
                                                                                self._predictions['rpn_cls_prob'],
                                                                                self._predictions['rpn_cls_pred'],
                                                                                self._predictions['rpn_bbox_pred'],

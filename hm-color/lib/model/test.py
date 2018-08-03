@@ -18,12 +18,12 @@ import math
 
 from utils.timer import Timer
 from utils.cython_nms import nms
-from utils.blob import im_list_to_blob, prep_im_for_blob
+from utils.blob import im_list_to_blob
 
 from model.config import cfg, get_output_dir
 from model.bbox_transform import clip_boxes, bbox_transform_inv
 
-def _get_image_blob(im, scale):
+def _get_image_blob(im,scale):
   """Converts an image into a network input.
   Arguments:
     im (ndarray): a color image in BGR order
@@ -32,11 +32,28 @@ def _get_image_blob(im, scale):
     im_scale_factors (list): list of image scales (relative to im) used
       in the image pyramid
   """
-  im_org, im_scale = prep_im_for_blob(im, cfg.PIXEL_MEANS, scale, cfg.TEST.MAX_SIZE)
-  im_scale_factors = [im_scale]
- 
+  im_orig = im.astype(np.float32, copy=True)
+  im_orig -= cfg.PIXEL_MEANS
+
+  im_shape = im_orig.shape
+  im_size_min = np.min(im_shape[0:2])
+  im_size_max = np.max(im_shape[0:2])
+
+  processed_ims = []
+  im_scale_factors = []
+
+  for target_size in [scale]:
+    im_scale = float(target_size) / float(im_size_min)
+    # Prevent the biggest axis from being more than MAX_SIZE
+    if np.round(im_scale * im_size_max) > cfg.TEST.MAX_SIZE:
+      im_scale = float(cfg.TEST.MAX_SIZE) / float(im_size_max)
+    im = cv2.resize(im_orig, None, None, fx=im_scale, fy=im_scale,
+            interpolation=cv2.INTER_LINEAR)
+    im_scale_factors.append(im_scale)
+    processed_ims.append(im)
+
   # Create a blob to hold the input images
-  blob = im_list_to_blob([im_org])
+  blob = im_list_to_blob(processed_ims)
 
   return blob, np.array(im_scale_factors)
 
@@ -78,11 +95,7 @@ def im_detect(sess, net, im):
     blobs['im_info'] = np.array([im_blob.shape[1], im_blob.shape[2], im_scales[0]], dtype=np.float32)
 
     _, scores, bbox_pred, rois = net.test_image(sess, blobs['data'], blobs['im_info'])
-    rpn_cls_score, rpn_cls_prob, rpn_cls_pred, rpn_bbox_pred, rois_1 = net.test_image_rpn(sess, blobs['data'], blobs['im_info'])
-
-    print(rpn_cls_score.shape, rpn_cls_score.sum())
-    print(rpn_cls_prob.shape, rpn_cls_prob.sum())
-    print(rois)
+    # rpn_cls_score, rpn_cls_prob, rpn_cls_pred, rpn_bbox_pred, rois_1 = net.test_image_rpn(sess, blobs['data'], blobs['im_info'])
     
     boxes = rois[:, 1:5] / im_scales[0]
     scores = np.reshape(scores, [scores.shape[0], -1])

@@ -108,6 +108,8 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     else:    
         scores, boxes = im_detect(sess, net, im)
 
+    print(boxes)
+
     # Visualize detections for each class
     CONF_THRESH = 0.1
 
