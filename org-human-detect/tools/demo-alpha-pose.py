@@ -78,6 +78,7 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     cls_scores = scores[:, cls_ind]
     dets = np.hstack((cls_boxes,
                       cls_scores[:, np.newaxis])).astype(np.float32)
+
     keep=soft_nms(dets,method=2)
     dets=keep
     if(dets.shape[0]!=0):
@@ -145,8 +146,8 @@ if __name__ == '__main__':
         net = resnetv1(num_layers=152)
     else:
         raise NotImplementedError
-    net.create_architecture("TEST", 81,
-                          tag='default', anchor_scales=[2,4,8, 16, 32])
+    net.create_architecture('TEST', 81,
+                          tag='default', anchor_scales=[2,4,8,16,32])
     saver = tf.train.Saver()
     saver.restore(sess, tfmodel)
 
