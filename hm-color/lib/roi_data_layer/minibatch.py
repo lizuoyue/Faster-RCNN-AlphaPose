@@ -78,6 +78,7 @@ def _get_image_blob(roidb, scale_inds):
     file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.png' % (dataset, img_id)
     if os.path.exists(file_name):
       hm_c = cv2.imread(file_name)
+      hm_c = cv2.cvtColor(hm_c, cv2.COLOR_BGR2RGB)
     else:
       h, w = im.shape[0], im.shape[1]
       xx, yy = np.meshgrid(np.arange(w), np.arange(h))

@@ -81,8 +81,9 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     img_id = image_name.split('/')[-1].replace('.jpg', '')
     file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.png' % (dataset, img_id)
     h, w = im.shape[0], im.shape[1]
-    if False and os.path.exists(file_name):
+    if os.path.exists(file_name):
       hm_c = cv2.imread(file_name)
+      hm_c = cv2.cvtColor(hm_c, cv2.COLOR_BGR2RGB)
     else:
       xx, yy = np.meshgrid(np.arange(w), np.arange(h))
       hm = np.ones((18, h, w)) * (-1e9)
