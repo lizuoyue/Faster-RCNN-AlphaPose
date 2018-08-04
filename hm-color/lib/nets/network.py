@@ -208,7 +208,7 @@ class Network(object):
       initializer_bbox = tf.random_normal_initializer(mean=0.0, stddev=0.001)
 
     net_conv = self._image_to_head(is_training)
-    net_conv_hm = self._image_to_head_hm(is_training)
+    # net_conv_hm = self._image_to_head_hm(is_training)
     with tf.variable_scope(self._scope, self._scope):
       # build the anchors for the image
       self._anchor_component()
