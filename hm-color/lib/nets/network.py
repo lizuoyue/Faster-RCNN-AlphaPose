@@ -49,10 +49,13 @@ class Network(object):
     if self._gt_image is None:
       self._add_gt_image()
     image = tf.py_func(draw_bounding_boxes, 
-                      [self._gt_image, self._gt_boxes, self._im_info],
+                      [self._gt_image[..., :3], self._gt_boxes, self._im_info],
+                      tf.float32, name="gt_boxes")
+    image_hm = tf.py_func(draw_bounding_boxes, 
+                      [self._gt_image[..., 3:], self._gt_boxes, self._im_info],
                       tf.float32, name="gt_boxes")
     
-    return tf.summary.image('GROUND_TRUTH', image)
+    return tf.summary.image('GROUND_TRUTH', image), tf.summary.image('HEAT_MAP', image_hm)
 
   def _add_act_summary(self, tensor):
     tf.summary.histogram('ACT/' + tensor.op.name + '/activations', tensor)
@@ -416,7 +419,8 @@ class Network(object):
 
       val_summaries = []
       with tf.device("/cpu:0"):
-        val_summaries.append(self._add_gt_image_summary())
+        # val_summaries.append(self._add_gt_image_summary())
+        val_summaries.extend(list(self._add_gt_image_summary()))
         for key, var in self._event_summaries.items():
           val_summaries.append(tf.summary.scalar(key, var))
         for key, var in self._score_summaries.items():
