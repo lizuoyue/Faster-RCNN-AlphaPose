@@ -338,10 +338,11 @@ class Network(object):
                                        weights_initializer=initializer,
                                        trainable=fc_is_training,
                                        activation_fn=None, scope='cls_score')
-    cls_score += slim.fully_connected(fc7_hm, self._num_classes, 
+    cls_score_hm = slim.fully_connected(fc7_hm, self._num_classes, 
                                        weights_initializer=initializer,
                                        trainable=is_training,
                                        activation_fn=None, scope='hm/cls_score')
+    cls_score += cls_score_hm
     cls_prob = self._softmax_layer(cls_score, "cls_prob")
     cls_pred = tf.argmax(cls_score, axis=1, name="cls_pred")
     bbox_pred = slim.fully_connected(fc7, self._num_classes * 4, 
@@ -354,6 +355,7 @@ class Network(object):
                                      activation_fn=None, scope='hm/bbox_pred')
 
     self._predictions["cls_score"] = cls_score
+    self._predictions["cls_score_hm"] = cls_score_hm
     self._predictions["cls_pred"] = cls_pred
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
@@ -385,6 +387,7 @@ class Network(object):
 
     training = mode == 'TRAIN'
     testing = mode == 'TEST'
+    print('Training', training, 'Testing', testing)
 
     assert tag != None
 
@@ -460,6 +463,8 @@ class Network(object):
                                                      self._predictions['bbox_pred'],
                                                      self._predictions['rois']],
                                                     feed_dict=feed_dict)
+    print(cls_score)
+    print(sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
     return cls_score, cls_prob, bbox_pred, rois
 
   def get_summary(self, sess, blobs):
