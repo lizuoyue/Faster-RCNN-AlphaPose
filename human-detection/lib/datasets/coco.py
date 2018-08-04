@@ -98,7 +98,7 @@ class coco(imdb):
     if False and index>1000000:
       file_name=self.transform[str(index)]+'.jpg'
     else:
-      file_name = ('COCO_' + self._data_name + '_' +
+      file_name = (#'COCO_' + self._data_name + '_' +
                  str(index).zfill(12) + '.jpg')
     
     image_path = osp.join(self._data_path, 'images',
