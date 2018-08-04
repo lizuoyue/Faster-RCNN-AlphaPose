@@ -113,7 +113,7 @@ class SolverWrapper(object):
         for exclusion in exclusions:
           if var.startswith(exclusion):
             excluded = True
-            print('Excluded: ' + var)
+            print(var)
             break
         if not excluded:
           variables_to_restore[var] = var_to_shape_map[var]
@@ -200,9 +200,7 @@ class SolverWrapper(object):
     variables = tf.global_variables()
     # Initialize all variables first
     sess.run(tf.variables_initializer(variables, name='init'))
-    var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,
-      exclusions=['hm', 'resnet_v1_152/bbox_pred', 'resnet_v1_152/cls_score']
-    )
+    var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,exclusions=['resnet_v1_152/bbox_pred','resnet_v1_152/cls_score','resnet_v1_152/rpn_cls_score','resnet_v1_152/rpn_bbox_pred'])
     # Get the variables to restore, ignoring the variables to fix
     variables_to_restore = self.net.get_variables_to_restore(variables, var_keep_dic)
 
@@ -280,7 +278,6 @@ class SolverWrapper(object):
       rate, last_snapshot_iter, stepsizes, np_paths, ss_paths = self.restore(sess, 
                                                                             str(sfiles[-1]), 
                                                                             str(nfiles[-1]))
-    self.snapshot(sess, 0)
     timer = Timer()
     iter = last_snapshot_iter + 1
     last_summary_time = time.time()

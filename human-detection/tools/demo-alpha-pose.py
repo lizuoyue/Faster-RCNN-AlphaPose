@@ -34,7 +34,7 @@ import h5py
  
 
 NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',),'res152':('res152.ckpt',)}
-DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2017_train',)}
+DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',),'coco':('coco_2014_train+coco_2014_valminusminival',)}
 
 def vis_detections(im, image_name, class_name, dets,xminarr,yminarr,xmaxarr,ymaxarr,results,score_file,index_file,num_boxes, thresh=0.5):
     """Draw detected bounding boxes."""
@@ -65,7 +65,6 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
         scores, boxes = im_detect_fast(sess, net, im)
     else:    
         scores, boxes = im_detect(sess, net, im)
-
     # Visualize detections for each class
     CONF_THRESH = 0.1
 
@@ -76,7 +75,6 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     cls_scores = scores[:, cls_ind]
     dets = np.hstack((cls_boxes,
                       cls_scores[:, np.newaxis])).astype(np.float32)
-
     keep=soft_nms(dets,method=2)
     dets=keep
     if(dets.shape[0]!=0):
@@ -144,8 +142,8 @@ if __name__ == '__main__':
         net = resnetv1(num_layers=152)
     else:
         raise NotImplementedError
-    net.create_architecture('TEST', 81,
-                          tag='default', anchor_scales=[2,4,8,16,32])
+    net.create_architecture("TEST", 81,
+                          tag='default', anchor_scales=[2,4,8, 16, 32])
     saver = tf.train.Saver()
     saver.restore(sess, tfmodel)
 

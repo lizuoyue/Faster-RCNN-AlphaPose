@@ -180,7 +180,7 @@ __C.TEST.NMS = 0.3
 __C.TEST.SVM = False
 
 # Test using bounding-box regressors
-__C.TEST.BBOX_REG = False
+__C.TEST.BBOX_REG = True
 
 # Propose boxes
 __C.TEST.HAS_RPN = False
@@ -221,7 +221,7 @@ __C.RESNET.MAX_POOL = False
 
 # Number of fixed blocks during training, by default the first of all 4 blocks is fixed
 # Range: 0 (none) to 3 (all)
-__C.RESNET.FIXED_BLOCKS = 3
+__C.RESNET.FIXED_BLOCKS = 1
 
 #
 # MobileNet options

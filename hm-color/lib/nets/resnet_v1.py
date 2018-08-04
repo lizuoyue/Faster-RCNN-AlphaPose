@@ -43,30 +43,6 @@ def resnet_arg_scope(is_training=True,
     with arg_scope([slim.batch_norm], **batch_norm_params) as arg_sc:
       return arg_sc
 
-def resnet_arg_scope_bn_trainable(is_training=True,
-                     batch_norm_decay=0.997,
-                     batch_norm_epsilon=1e-5,
-                     batch_norm_scale=True):
-  batch_norm_params_trainable = {
-    'is_training': is_training,
-    'decay': batch_norm_decay,
-    'epsilon': batch_norm_epsilon,
-    'scale': batch_norm_scale,
-    'trainable': True,
-    'updates_collections': tf.GraphKeys.UPDATE_OPS
-  }
-
-  with arg_scope(
-      [slim.conv2d],
-      weights_regularizer=slim.l2_regularizer(cfg.TRAIN.WEIGHT_DECAY),
-      weights_initializer=slim.variance_scaling_initializer(),
-      trainable=is_training,
-      activation_fn=tf.nn.relu,
-      normalizer_fn=slim.batch_norm,
-      normalizer_params=batch_norm_params_trainable):
-    with arg_scope([slim.batch_norm], **batch_norm_params_trainable) as arg_sc:
-      return arg_sc
-
 class resnetv1(Network):
   def __init__(self, num_layers=50):
     Network.__init__(self)
@@ -106,13 +82,7 @@ class resnetv1(Network):
       net = resnet_utils.conv2d_same(self._image, 64, 7, stride=2, scope='conv1')
       net = tf.pad(net, [[0, 0], [1, 1], [1, 1], [0, 0]])
       net = slim.max_pool2d(net, [3, 3], stride=2, padding='VALID', scope='pool1')
-    return net
 
-  def _build_base_hm(self):
-    with tf.variable_scope('hm/' + self._scope, 'hm/' + self._scope):
-      net = resnet_utils.conv2d_same(self._image_hm, 64, 7, stride=2, scope='conv1')
-      net = tf.pad(net, [[0, 0], [1, 1], [1, 1], [0, 0]])
-      net = slim.max_pool2d(net, [3, 3], stride=2, padding='VALID', scope='pool1')
     return net
 
   def _image_to_head(self, is_training, reuse=False):
@@ -142,23 +112,8 @@ class resnetv1(Network):
 
     return net_conv
 
-  def _image_to_head_hm(self, is_training, reuse=False):
-    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
-      net_conv_hm = self._build_base_hm()
-      net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
-                                         self._blocks_hm[:-1],
-                                         global_pool=False,
-                                         include_root_block=False,
-                                         reuse=reuse,
-                                         scope='hm/' + self._scope)
-    self._act_summaries.append(net_conv_hm)
-    self._layers['head_hm'] = net_conv_hm
-
-    return net_conv_hm
-
-
   def _head_to_tail(self, pool5, is_training, reuse=False):
-    with slim.arg_scope(resnet_arg_scope(is_training=False)):
+    with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
       fc7, _ = resnet_v1.resnet_v1(pool5,
                                    self._blocks[-1:],
                                    global_pool=False,
@@ -168,17 +123,6 @@ class resnetv1(Network):
       # average pooling done by reduce_mean
       fc7 = tf.reduce_mean(fc7, axis=[1, 2])
     return fc7
-
-  def _head_to_tail_hm(self, pool5_hm, is_training, reuse=False):
-    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
-      fc7_hm, _ = resnet_v1.resnet_v1(pool5_hm,
-                                      self._blocks_hm[-1:],
-                                      global_pool=False,
-                                      include_root_block=False,
-                                      reuse=reuse,
-                                      scope='hm/' + self._scope)
-      fc7_hm = tf.reduce_mean(fc7_hm, axis=[1, 2])
-    return fc7_hm
 
   def _decide_blocks(self):
     # choose different blocks for different number of layers
@@ -202,14 +146,10 @@ class resnetv1(Network):
                       # use stride 1 for the last conv4 layer
                       resnet_v1_block('block3', base_depth=256, num_units=36, stride=1),
                       resnet_v1_block('block4', base_depth=512, num_units=3, stride=1)]
+
     else:
       # other numbers are not supported
       raise NotImplementedError
-    self._blocks_hm = [resnet_v1_block('block1', base_depth=64, num_units=3, stride=2),
-                      resnet_v1_block('block2', base_depth=128, num_units=4, stride=2),
-                      # use stride 1 for the last conv4 layer
-                      resnet_v1_block('block3', base_depth=256, num_units=6, stride=1),
-                      resnet_v1_block('block4', base_depth=512, num_units=3, stride=1)]
 
   def get_variables_to_restore(self, variables, var_keep_dic):
     variables_to_restore = []
@@ -222,8 +162,6 @@ class resnetv1(Network):
       if v.name.split(':')[0] in var_keep_dic:
         print('Variables restored: %s' % v.name)
         variables_to_restore.append(v)
-      else:
-        print('Variables not restored: %s' % v.name)
 
     return variables_to_restore
 
