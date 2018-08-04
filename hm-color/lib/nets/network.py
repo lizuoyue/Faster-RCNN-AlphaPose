@@ -457,8 +457,6 @@ class Network(object):
   def test_image(self, sess, image, im_info):
     feed_dict = {self._image: image,
                  self._im_info: im_info}
-    print(image[0, 50, 50])
-    print(image[0, 100, 100])
     cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
                                                      self._predictions['cls_prob'],
                                                      self._predictions['bbox_pred'],
@@ -467,6 +465,10 @@ class Network(object):
     # cls_score_hm = sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict)
     # print('cls_score', cls_score - cls_score_hm)
     # print('cls_score_hm', cls_score_hm)
+
+    head_hm = sess.run(self._layers['head_hm'])
+    print(np.abs(head_hm).mean())
+
     return cls_score, cls_prob, bbox_pred, rois
 
   def get_summary(self, sess, blobs):
@@ -486,10 +488,12 @@ class Network(object):
                                                                         self._losses['total_loss'],
                                                                         train_op],
                                                                        feed_dict=feed_dict)
-    print(blobs['data'][0, 50, 50])
-    print(blobs['data'][0, 100, 100])
     # print('cls_score', sess.run(self._predictions["cls_score"], feed_dict=feed_dict))
     # print('cls_score_hm', sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
+
+    head_hm = sess.run(self._layers['head_hm'])
+    print(np.abs(head_hm).mean())
+
     return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss
 
   def train_step_with_summary(self, sess, blobs, train_op):
