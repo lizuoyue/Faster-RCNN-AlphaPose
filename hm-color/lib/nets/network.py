@@ -484,8 +484,8 @@ class Network(object):
                                                                         self._losses['total_loss'],
                                                                         train_op],
                                                                        feed_dict=feed_dict)
-    print(sess.run(self._predictions["cls_score"], feed_dict=feed_dict))
-    print(sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
+    print('cls_score', sess.run(self._predictions["cls_score"], feed_dict=feed_dict))
+    print('cls_score_hm', sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
     return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss
 
   def train_step_with_summary(self, sess, blobs, train_op):
