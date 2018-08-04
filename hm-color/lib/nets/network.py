@@ -463,8 +463,8 @@ class Network(object):
                                                      self._predictions['bbox_pred'],
                                                      self._predictions['rois']],
                                                     feed_dict=feed_dict)
-    print(cls_score)
-    print(sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
+    # print(cls_score)
+    # print(sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
     return cls_score, cls_prob, bbox_pred, rois
 
   def get_summary(self, sess, blobs):
