@@ -225,7 +225,7 @@ class Network(object):
     fc7_hm = self._head_to_tail_hm(pool5_hm, is_training)
     with tf.variable_scope(self._scope, self._scope):
       # region classification
-      cls_prob, bbox_pred = self._region_classification(fc7, is_training, 
+      cls_prob, bbox_pred = self._region_classification(fc7, fc7_hm, is_training, 
                                                         initializer, initializer_bbox)
 
     self._score_summaries.update(self._predictions)
@@ -291,10 +291,11 @@ class Network(object):
     return loss
 
   def _region_proposal(self, net_conv, is_training, initializer):
-    rpn = slim.conv2d(net_conv, cfg.RPN_CHANNELS, [3, 3], trainable=is_training, weights_initializer=initializer,
+    rpn_is_training = False
+    rpn = slim.conv2d(net_conv, cfg.RPN_CHANNELS, [3, 3], trainable=rpn_is_training, weights_initializer=initializer,
                         scope="rpn_conv/3x3")
     self._act_summaries.append(rpn)
-    rpn_cls_score = slim.conv2d(rpn, self._num_anchors * 2, [1, 1], trainable=is_training,
+    rpn_cls_score = slim.conv2d(rpn, self._num_anchors * 2, [1, 1], trainable=rpn_is_training,
                                 weights_initializer=initializer,
                                 padding='VALID', activation_fn=None, scope='rpn_cls_score')
     # change it so that the score has 2 as its channel size
@@ -302,7 +303,7 @@ class Network(object):
     rpn_cls_prob_reshape = self._softmax_layer(rpn_cls_score_reshape, "rpn_cls_prob_reshape")
     rpn_cls_pred = tf.argmax(tf.reshape(rpn_cls_score_reshape, [-1, 2]), axis=1, name="rpn_cls_pred")
     rpn_cls_prob = self._reshape_layer(rpn_cls_prob_reshape, self._num_anchors * 2, "rpn_cls_prob")
-    rpn_bbox_pred = slim.conv2d(rpn, self._num_anchors * 4, [1, 1], trainable=is_training,
+    rpn_bbox_pred = slim.conv2d(rpn, self._num_anchors * 4, [1, 1], trainable=rpn_is_training,
                                 weights_initializer=initializer,
                                 padding='VALID', activation_fn=None, scope='rpn_bbox_pred')
     if is_training:
@@ -328,17 +329,26 @@ class Network(object):
 
     return rois
 
-  def _region_classification(self, fc7, is_training, initializer, initializer_bbox):
+  def _region_classification(self, fc7, fc7_hm, is_training, initializer, initializer_bbox):
+    fc_is_training = False
     cls_score = slim.fully_connected(fc7, self._num_classes, 
                                        weights_initializer=initializer,
-                                       trainable=is_training,
+                                       trainable=fc_is_training,
                                        activation_fn=None, scope='cls_score')
+    cls_score += 0*slim.fully_connected(fc7_hm, self._num_classes, 
+                                       weights_initializer=initializer,
+                                       trainable=is_training,
+                                       activation_fn=None, scope='hm/cls_score')
     cls_prob = self._softmax_layer(cls_score, "cls_prob")
     cls_pred = tf.argmax(cls_score, axis=1, name="cls_pred")
     bbox_pred = slim.fully_connected(fc7, self._num_classes * 4, 
                                      weights_initializer=initializer_bbox,
-                                     trainable=is_training,
+                                     trainable=fc_is_training,
                                      activation_fn=None, scope='bbox_pred')
+    bbox_pred += 0*slim.fully_connected(fc7_hm, self._num_classes * 4, 
+                                     weights_initializer=initializer_bbox,
+                                     trainable=is_training,
+                                     activation_fn=None, scope='hm/bbox_pred')
 
     self._predictions["cls_score"] = cls_score
     self._predictions["cls_pred"] = cls_pred
@@ -355,7 +365,7 @@ class Network(object):
 
   def create_architecture(self, mode, num_classes, tag=None,
                           anchor_scales=(8, 16, 32), anchor_ratios=(0.5, 1, 2)):
-    self._image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
+    self._image = tf.placeholder(tf.float32, shape=[1, None, None, 6])
     self._im_info = tf.placeholder(tf.float32, shape=[3])
     self._gt_boxes = tf.placeholder(tf.float32, shape=[None, 5])
     self._tag = tag
