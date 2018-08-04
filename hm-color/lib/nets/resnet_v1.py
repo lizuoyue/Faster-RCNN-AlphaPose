@@ -150,7 +150,7 @@ class resnetv1(Network):
                                          global_pool=False,
                                          include_root_block=False,
                                          reuse=reuse,
-                                         scope=self._scope)
+                                         scope='hm/' + self._scope)
 
     self._act_summaries.append(net_conv_hm)
     self._layers['head_hm'] = net_conv_hm
@@ -176,7 +176,7 @@ class resnetv1(Network):
                                    global_pool=False,
                                    include_root_block=False,
                                    reuse=reuse,
-                                   scope=self._scope)
+                                   scope='hm/' + self._scope)
       # average pooling done by reduce_mean
       fc7_hm = tf.reduce_mean(fc7_hm, axis=[1, 2])
     return fc7_hm
@@ -225,6 +225,8 @@ class resnetv1(Network):
       if v.name.split(':')[0] in var_keep_dic:
         print('Variables restored: %s' % v.name)
         variables_to_restore.append(v)
+      else:
+        print('Variables not restored: %s' % v.name)
 
     return variables_to_restore
 
