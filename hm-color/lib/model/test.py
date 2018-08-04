@@ -96,8 +96,8 @@ def im_detect(sess, net, im):
 
     _, scores, bbox_pred, rois = net.test_image(sess, blobs['data'], blobs['im_info'])
 
-    print(rois.shape)
-    print(rois)
+    # print(rois.shape)
+    # print(rois)
     
     boxes = rois[:, 1:5] / im_scales[0]
     scores = np.reshape(scores, [scores.shape[0], -1])
