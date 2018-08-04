@@ -60,6 +60,12 @@ def _get_image_blob(roidb, scale_inds):
   im_scales = []
   for i in range(num_images):
     im = cv2.imread(roidb[i]['image'])
+    #####################################################
+    name_parts = roidb[i]['image'].split('/')
+    file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.png' % (name_parts[-2], name_parts[-1].replace('.jpg', ''))
+    assert(os.path.exists(file_name))
+    im = np.concatenate([im, cv2.imread(file_name)], axis = 2)
+    #####################################################
     if roidb[i]['flipped']:
       im = im[:, ::-1, :]
     target_size = cfg.TRAIN.SCALES[scale_inds[i]]

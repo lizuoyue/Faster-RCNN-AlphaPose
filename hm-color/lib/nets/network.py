@@ -335,7 +335,7 @@ class Network(object):
                                        weights_initializer=initializer,
                                        trainable=fc_is_training,
                                        activation_fn=None, scope='cls_score')
-    cls_score += 0*slim.fully_connected(fc7_hm, self._num_classes, 
+    cls_score += slim.fully_connected(fc7_hm, self._num_classes, 
                                        weights_initializer=initializer,
                                        trainable=is_training,
                                        activation_fn=None, scope='hm/cls_score')
@@ -345,7 +345,7 @@ class Network(object):
                                      weights_initializer=initializer_bbox,
                                      trainable=fc_is_training,
                                      activation_fn=None, scope='bbox_pred')
-    bbox_pred += 0*slim.fully_connected(fc7_hm, self._num_classes * 4, 
+    bbox_pred += slim.fully_connected(fc7_hm, self._num_classes * 4, 
                                      weights_initializer=initializer_bbox,
                                      trainable=is_training,
                                      activation_fn=None, scope='hm/bbox_pred')

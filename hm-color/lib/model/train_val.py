@@ -281,7 +281,7 @@ class SolverWrapper(object):
                                                                             str(sfiles[-1]), 
                                                                             str(nfiles[-1]))
     self.snapshot(sess, 0)
-    quit()
+    # quit()
     timer = Timer()
     iter = last_snapshot_iter + 1
     last_summary_time = time.time()
