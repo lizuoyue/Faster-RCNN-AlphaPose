@@ -48,7 +48,7 @@ def resnet_arg_scope_bn_trainable(is_training=True,
                      batch_norm_epsilon=1e-5,
                      batch_norm_scale=True):
   batch_norm_params = {
-    'is_training': is_training,
+    'is_training': True,
     'decay': batch_norm_decay,
     'epsilon': batch_norm_epsilon,
     'scale': batch_norm_scale,
@@ -144,7 +144,7 @@ class resnetv1(Network):
     return net_conv
 
   def _image_to_head_hm(self, is_training, reuse=False):
-    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=False)):#is_training
+    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
       net_conv_hm = self._build_base_hm()
       net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
                                          self._blocks_hm[:-1],
