@@ -274,14 +274,14 @@ class SolverWrapper(object):
       print('initialize from pretrained model!!!!!!!!!!!!!!!!!!')
       time.sleep(2)
       rate, last_snapshot_iter, stepsizes, np_paths, ss_paths = self.initialize(sess)
+      self.snapshot(sess, 0)
+      # quit()
     else:
       print('from snapshot!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
       time.sleep(2)
       rate, last_snapshot_iter, stepsizes, np_paths, ss_paths = self.restore(sess, 
                                                                             str(sfiles[-1]), 
-                                                                            str(nfiles[-1]))
-    self.snapshot(sess, 0)
-    # quit()
+                                                                            str(nfiles[-1]))    
     timer = Timer()
     iter = last_snapshot_iter + 1
     last_summary_time = time.time()
