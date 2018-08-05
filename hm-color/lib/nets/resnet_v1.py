@@ -144,7 +144,7 @@ class resnetv1(Network):
     return net_conv
 
   def _image_to_head_hm(self, is_training, reuse=False):
-    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=is_training)):
+    with slim.arg_scope(resnet_arg_scope_bn_trainable(is_training=False)):#is_training
       net_conv_hm = self._build_base_hm()
       net_conv_hm, _ = resnet_v1.resnet_v1(net_conv_hm,
                                          self._blocks_hm[:-1],
