@@ -466,8 +466,8 @@ class Network(object):
     # print('cls_score', cls_score - cls_score_hm)
     # print('cls_score_hm', cls_score_hm)
 
-    head_hm = sess.run(self._layers['base_hm'], feed_dict=feed_dict)
-    print(np.abs(head_hm).mean())
+    # head_hm = sess.run(self._layers['base_hm'], feed_dict=feed_dict)
+    # print(np.abs(head_hm).mean())
 
     return cls_score, cls_prob, bbox_pred, rois
 
@@ -491,8 +491,8 @@ class Network(object):
     # print('cls_score', sess.run(self._predictions["cls_score"], feed_dict=feed_dict))
     # print('cls_score_hm', sess.run(self._predictions["cls_score_hm"], feed_dict=feed_dict))
 
-    head_hm = sess.run(self._layers['base_hm'], feed_dict=feed_dict)
-    print(np.abs(head_hm).mean())
+    # head_hm = sess.run(self._layers['base_hm'], feed_dict=feed_dict)
+    # print(np.abs(head_hm).mean())
 
     return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss
 

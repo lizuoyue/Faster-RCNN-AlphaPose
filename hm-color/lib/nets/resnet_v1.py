@@ -48,7 +48,7 @@ def resnet_arg_scope_bn_trainable(is_training=True,
                      batch_norm_epsilon=1e-5,
                      batch_norm_scale=True):
   batch_norm_params = {
-    'is_training': True,
+    'is_training': True, # Should be always True, otherwise it would have very weird outputs
     'decay': batch_norm_decay,
     'epsilon': batch_norm_epsilon,
     'scale': batch_norm_scale,
