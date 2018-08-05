@@ -113,6 +113,7 @@ class resnetv1(Network):
       net = resnet_utils.conv2d_same(self._image[..., 3:], 64, 7, stride=2, scope='conv1')
       net = tf.pad(net, [[0, 0], [1, 1], [1, 1], [0, 0]])
       net = slim.max_pool2d(net, [3, 3], stride=2, padding='VALID', scope='pool1')
+      self._layers['base_hm'] = net
     return net
 
   def _image_to_head(self, is_training, reuse=False):
