@@ -333,7 +333,7 @@ class Network(object):
     return rois
 
   def _region_classification(self, fc7, fc7_hm, is_training, initializer, initializer_bbox):
-    fc_is_training = False
+    fc_is_training = True
     cls_score = slim.fully_connected(fc7, self._num_classes, 
                                        weights_initializer=initializer,
                                        trainable=fc_is_training,
@@ -349,16 +349,18 @@ class Network(object):
                                      weights_initializer=initializer_bbox,
                                      trainable=fc_is_training,
                                      activation_fn=None, scope='bbox_pred')
-    bbox_pred += slim.fully_connected(fc7_hm, self._num_classes * 4, 
+    bbox_pred_sm = slim.fully_connected(fc7_hm, self._num_classes * 4, 
                                      weights_initializer=initializer_bbox,
                                      trainable=is_training,
                                      activation_fn=None, scope='hm/bbox_pred')
+    bbox_pred += bbox_pred_sm
 
     self._predictions["cls_score"] = cls_score
     self._predictions["cls_score_hm"] = cls_score_hm
     self._predictions["cls_pred"] = cls_pred
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
+    self._predictions["bbox_pred_sm"] = bbox_pred_sm
 
     return cls_prob, bbox_pred
 
