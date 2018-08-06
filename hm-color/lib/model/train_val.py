@@ -201,7 +201,7 @@ class SolverWrapper(object):
     # Initialize all variables first
     sess.run(tf.variables_initializer(variables, name='init'))
     var_keep_dic = self.get_variables_in_checkpoint_file(self.pretrained_model,
-      exclusions=[]#['resnet_v1_152/bbox_pred','resnet_v1_152/cls_score']
+      exclusions=['resnet_v1_152/bbox_pred','resnet_v1_152/cls_score']
     )
     # Get the variables to restore, ignoring the variables to fix
     variables_to_restore = self.net.get_variables_to_restore(variables, var_keep_dic)
@@ -274,7 +274,7 @@ class SolverWrapper(object):
       print('initialize from pretrained model!!!!!!!!!!!!!!!!!!')
       time.sleep(2)
       rate, last_snapshot_iter, stepsizes, np_paths, ss_paths = self.initialize(sess)
-      self.snapshot(sess, 0)
+      # self.snapshot(sess, 0)
       # quit()
     else:
       print('from snapshot!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
