@@ -17,9 +17,9 @@ if __name__ == '__main__':
 	choose = 'all box'
 	if choose == 'final box':
 		boxes = [boxes[int(line.strip())] for line in open('finalBoxIdx.txt').readlines()]
-		imgIds = [int(item.strip().split('\t')[0].replace('.jpg', '')) for item in open('../POSE/scores.txt').readlines()]
+		imgIds = [int(item.strip().split('\t')[0].split('/')[-1].replace('.jpg', '')) for item in open('../POSE/scores.txt').readlines()]
 	if choose == 'all box':
-		imgIds = [int(item.strip().split('\t')[0].replace('.jpg', '')) for item in open('tools/prediction/BBOX/test-images.txt').readlines()]
+		imgIds = [int(item.strip().split('\t')[0].split('/')[-1].replace('.jpg', '')) for item in open('tools/prediction/BBOX/test-images.txt').readlines()]
 	assert(len(imgIds) == len(boxes))
 
 	res = [{
