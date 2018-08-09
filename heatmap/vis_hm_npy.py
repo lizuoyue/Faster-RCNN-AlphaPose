@@ -5,6 +5,7 @@ heatmap['val2017'] = json.load(open('/disks/data4/zyli/Faster-RCNN-AlphaPose/hea
 
 from pycocotools.coco import COCO
 import numpy as np
+import cv2
 
 for dataset in ['val2017', 'train2017']:
 	coco = COCO('../../coco2017data/annotations/instances_%s.json' % dataset)
@@ -14,8 +15,11 @@ for dataset in ['val2017', 'train2017']:
 		print(dataset, i, imgId)
 		imgIdStr = str(imgId).zfill(12)
 		h, w = imgInfo['height'], imgInfo['width']
-		xx, yy = np.meshgrid(np.arange(w), np.arange(h))
-		hm = np.ones((18, h, w)) * (-1e9)
+		h_2, w_2 = int(h / 2), int(w / 2)
+		xx, yy = np.meshgrid(np.arange(w_2), np.arange(h_2))
+		xx *= 2
+		yy *= 2
+		hm = np.ones((18, h_2, w_2)) * (-1e9)
 		for j, part in enumerate(heatmap[dataset][imgIdStr]):
 			for x, y, v in part:
 				if v < 600:
