@@ -65,7 +65,7 @@ def _get_image_blob(roidb, scale_inds):
     name_parts = roidb[i]['image'].split('/')
     file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.npy' % (name_parts[-2], name_parts[-1].replace('.jpg', ''))
     assert(os.path.exists(file_name))
-    im = np.concatenate([im, cv2.resize(np.load(file_name, dtype = np.float32), im.shape[:2], interpolation=cv2.INTER_LINEAR)], axis = 2)
+    im = np.concatenate([im, cv2.resize(np.array(np.load(file_name), np.float32), im.shape[:2], interpolation=cv2.INTER_LINEAR)], axis = 2)
     #####################################################
     if roidb[i]['flipped']:
       im = im[:, ::-1, :]
