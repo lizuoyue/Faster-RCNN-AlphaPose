@@ -52,7 +52,7 @@ class Network(object):
                       [self._gt_image[..., :3], self._gt_boxes, self._im_info],
                       tf.float32, name="gt_boxes")
     image_hm = tf.py_func(draw_bounding_boxes, 
-                      [np.max(self._gt_image[..., 3:], axis = -1), self._gt_boxes, self._im_info],
+                      [np.max(self._gt_image[..., 3:], axis = -1)[..., np.newaxis], self._gt_boxes, self._im_info],
                       tf.float32, name="gt_boxes")
     
     return tf.summary.image('GROUND_TRUTH', image), tf.summary.image('HEAT_MAP', image_hm)
