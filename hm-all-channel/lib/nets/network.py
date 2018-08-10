@@ -48,11 +48,12 @@ class Network(object):
     # use a customized visualization function to visualize the boxes
     if self._gt_image is None:
       self._add_gt_image()
+    gt_hm = np.tile(np.max(self._gt_image[..., 3:], axis = -1)[..., np.newaxis], [1, 1, 3])
     image = tf.py_func(draw_bounding_boxes, 
                       [self._gt_image[..., :3], self._gt_boxes, self._im_info],
                       tf.float32, name="gt_boxes")
     image_hm = tf.py_func(draw_bounding_boxes, 
-                      [np.max(self._gt_image[..., 3:], axis = -1)[..., np.newaxis], self._gt_boxes, self._im_info],
+                      [gt_hm, self._gt_boxes, self._im_info],
                       tf.float32, name="gt_boxes")
     
     return tf.summary.image('GROUND_TRUTH', image), tf.summary.image('HEAT_MAP', image_hm)
