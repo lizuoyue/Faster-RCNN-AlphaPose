@@ -60,10 +60,12 @@ def demo(sess, net, image_name,xminarr,yminarr,xmaxarr,ymaxarr,results,score_fil
     im_file = os.path.join(imagedir, image_name)
     im = cv2.imread(im_file)
     ##################
-    name_parts = image_name.split('/')
-    file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.png' % (name_parts[-2], name_parts[-1].replace('.jpg', ''))
+    name_parts = roidb[i]['image'].split('/')
+    file_name = '/disks/data4/zyli/Faster-RCNN-AlphaPose/heatmap/%s/%s.npy' % (name_parts[-2], name_parts[-1].replace('.jpg', ''))
     assert(os.path.exists(file_name))
-    im = np.concatenate([im, cv2.imread(file_name)], axis = 2)
+    hm = np.array(np.load(file_name), np.float32)
+    hm = cv2.resize(hm, (im.shape[1], im.shape[0]), interpolation=cv2.INTER_LINEAR)
+    im = np.concatenate([im, hm], axis = 2)
     ##################
 
     # Detect all object classes and regress object bounds
