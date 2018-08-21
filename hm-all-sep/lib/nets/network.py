@@ -258,12 +258,12 @@ class Network(object):
     fc7_hm = self._head_to_tail_hm(pool5_hm, is_training)
     with tf.variable_scope(self._scope, self._scope):
       # region classification
-      cls_prob, bbox_pred = self._region_classification(fc7, fc7_hm, is_training, 
+      cls_prob, bbox_pred, cls_prob_hm, bbox_pred_hm = self._region_classification(fc7, fc7_hm, is_training, 
                                                         initializer, initializer_bbox)
 
     self._score_summaries.update(self._predictions)
 
-    return rois, cls_prob, bbox_pred
+    return rois, cls_prob, bbox_pred, cls_prob_hm, bbox_pred_hm
 
   def _smooth_l1_loss(self, bbox_pred, bbox_targets, bbox_inside_weights, bbox_outside_weights, sigma=1.0, dim=[1]):
     sigma_2 = sigma ** 2
@@ -360,6 +360,7 @@ class Network(object):
       # Try to have a deterministic order for the computing graph, for reproducibility
       with tf.control_dependencies([rpn_labels]):
         rois, _ = self._proposal_target_layer(rois, roi_scores, "rpn_rois")
+        _, _ = self._proposal_target_layer_people(rois, roi_scores, "rpn_rois_people")
     else:
       if cfg.TEST.MODE == 'nms':
         rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
@@ -413,7 +414,7 @@ class Network(object):
     self._predictions["cls_prob_hm"] = cls_prob_hm
     self._predictions["bbox_pred_hm"] = bbox_pred_hm
 
-    return cls_prob, bbox_pred
+    return cls_prob, bbox_pred, cls_prob_hm, bbox_pred_hm
 
   def _image_to_head(self, is_training, reuse=False):
     raise NotImplementedError
@@ -458,7 +459,7 @@ class Network(object):
                     weights_regularizer=weights_regularizer,
                     biases_regularizer=biases_regularizer, 
                     biases_initializer=tf.constant_initializer(0.0)): 
-      rois, cls_prob, bbox_pred = self._build_network(training)
+      rois, cls_prob, bbox_pred, cls_prob_hm, bbox_pred_hm = self._build_network(training)
 
     layers_to_output = {'rois': rois}
 
@@ -470,6 +471,12 @@ class Network(object):
       means = np.tile(np.array(cfg.TRAIN.BBOX_NORMALIZE_MEANS), (self._num_classes))
       self._predictions["bbox_pred"] *= stds
       self._predictions["bbox_pred"] += means
+
+      stds_hm = np.tile(np.array(cfg.TRAIN.BBOX_NORMALIZE_STDS), (self._num_classes_people))
+      means_hm = np.tile(np.array(cfg.TRAIN.BBOX_NORMALIZE_MEANS), (self._num_classes_people))
+      self._predictions["bbox_pred_hm"] *= stds_hm
+      self._predictions["bbox_pred_hm"] += means_hm
+
     else:
       self._add_losses()
       layers_to_output.update(self._losses)
