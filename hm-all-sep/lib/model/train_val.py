@@ -316,15 +316,15 @@ class SolverWrapper(object):
         last_summary_time = now
       else:
         # Compute the graph without summary
-        rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, total_loss = \
+        rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_cls_people, loss_box_people, total_loss = \
           self.net.train_step(sess, blobs, train_op)
       timer.toc()
 
       # Display training information
       if iter % (cfg.TRAIN.DISPLAY) == 0:
         print('iter: %d / %d, total loss: %.6f\n >>> rpn_loss_cls: %.6f\n '
-              '>>> rpn_loss_box: %.6f\n >>> loss_cls: %.6f\n >>> loss_box: %.6f\n >>> lr: %f' % \
-              (iter, max_iters, total_loss, rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, lr.eval()))
+              '>>> rpn_loss_box: %.6f\n >>> loss_cls: %.6f\n >>> loss_box: %.6f\n >>> loss_cls_people: %.6f\n >>> loss_box_people: %.6f\n >>> lr: %f' % \
+              (iter, max_iters, total_loss, rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_cls_people, loss_box_people, lr.eval()))
         print('speed: {:.3f}s / iter'.format(timer.average_time))
 
       # Snapshotting
