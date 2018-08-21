@@ -527,14 +527,14 @@ class Network(object):
 
   def get_summary(self, sess, blobs):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
-                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blob['gt_boxes_people']}
+                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blobs['gt_boxes_people']}
     summary = sess.run(self._summary_op_val, feed_dict=feed_dict)
 
     return summary
 
   def train_step(self, sess, blobs, train_op):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
-                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blob['gt_boxes_people']}
+                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blobs['gt_boxes_people']}
     rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_cls_people, loss_box_people, loss, _ = sess.run([self._losses["rpn_cross_entropy"],
                                                                         self._losses['rpn_loss_box'],
                                                                         self._losses['cross_entropy'],
@@ -548,7 +548,7 @@ class Network(object):
 
   def train_step_with_summary(self, sess, blobs, train_op):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
-                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blob['gt_boxes_people']}
+                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blobs['gt_boxes_people']}
     rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss, summary, _ = sess.run([self._losses["rpn_cross_entropy"],
                                                                                  self._losses['rpn_loss_box'],
                                                                                  self._losses['cross_entropy'],
@@ -563,6 +563,6 @@ class Network(object):
 
   def train_step_no_return(self, sess, blobs, train_op):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
-                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blob['gt_boxes_people']}
+                 self._gt_boxes: blobs['gt_boxes'], self._gt_boxes_people: blobs['gt_boxes_people']}
     sess.run([train_op], feed_dict=feed_dict)
 
