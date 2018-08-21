@@ -191,9 +191,9 @@ class Network(object):
       self._score_summaries.update(self._proposal_targets)
 
       self._proposal_targets_people['labels'] = tf.where(tf.less_equal(labels, 1), labels, tf.zeros([cfg.TRAIN.BATCH_SIZE, 1], tf.int32))
-      self._proposal_targets_people['bbox_targets'] = bbox_targets[:, 0: 2]
-      self._proposal_targets_people['bbox_inside_weights'] = bbox_inside_weights[:, 0: 2]
-      self._proposal_targets_people['bbox_outside_weights'] = bbox_outside_weights[:, 0: 2]
+      self._proposal_targets_people['bbox_targets'] = bbox_targets[:, 0: self._num_classes_people * 4]
+      self._proposal_targets_people['bbox_inside_weights'] = bbox_inside_weights[:, 0: self._num_classes_people * 4]
+      self._proposal_targets_people['bbox_outside_weights'] = bbox_outside_weights[:, 0: self._num_classes_people * 4]
 
       self._score_summaries.update(self._proposal_targets_people)
 
