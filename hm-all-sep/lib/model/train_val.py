@@ -306,7 +306,7 @@ class SolverWrapper(object):
       now = time.time()
       if iter == 1 or now - last_summary_time > cfg.TRAIN.SUMMARY_INTERVAL:
         # Compute the graph with summary
-        rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, total_loss, summary = \
+        rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_cls_people, loss_box_people, total_loss, summary = \
           self.net.train_step_with_summary(sess, blobs, train_op)
         self.writer.add_summary(summary, float(iter))
         # Also check the summary on the validation set
