@@ -342,7 +342,6 @@ class Network(object):
       # Try to have a deterministic order for the computing graph, for reproducibility
       with tf.control_dependencies([rpn_labels]):
         rois, _ = self._proposal_target_layer(rois, roi_scores, "rpn_rois")
-        _, _ = self._proposal_target_layer_people(rois, roi_scores, "rpn_rois_people")
     else:
       if cfg.TEST.MODE == 'nms':
         rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
