@@ -95,13 +95,8 @@ def im_detect(sess, net, im):
     blobs['im_info'] = np.array([im_blob.shape[1], im_blob.shape[2], im_scales[0]], dtype=np.float32)
 
     _, scores, bbox_pred, rois, _, scores_hm, bbox_pred_hm = net.test_image(sess, blobs['data'], blobs['im_info'])
-    
+
     boxes = rois[:, 1:5] / im_scales[0]
-    print(scores.shape)
-    print(scores_hm.shape)
-    quit()
-    scores = np.reshape(scores, [scores.shape[0], -1])
-    bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1])
     if cfg.TEST.BBOX_REG:
       # Apply bounding-box regression deltas
       box_deltas = bbox_pred
@@ -113,9 +108,11 @@ def im_detect(sess, net, im):
     else:
       # Simply repeat the boxes, once for each class
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
-    finalscores.append(scores)
-    finalpredboxes.append(pred_boxes)
-  return np.concatenate((finalscores[0],finalscores[1],finalscores[2])),np.concatenate((finalpredboxes[0],finalpredboxes[1],finalpredboxes[2]))
+
+    finalscores.extend([scores, scores_hm])
+    finalpredboxes.extend([pred_boxes, pred_boxes_hm])
+
+  return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
 def im_detect_fast(sess, net, im):
   finalscores=[]
