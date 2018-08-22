@@ -96,9 +96,9 @@ def im_detect(sess, net, im):
 
     _, scores, bbox_pred, rois, _, scores_hm, bbox_pred_hm = net.test_image(sess, blobs['data'], blobs['im_info'])
 
-    assert(scores.shape[0] == scores_hm.shape[0])
-    for i in range(scores.shape[0]):
-      print(scores[i, 1], scores_hm[i, 1])
+    # assert(scores.shape[0] == scores_hm.shape[0])
+    # for i in range(scores.shape[0]):
+    #   print(scores[i, 1], scores_hm[i, 1])
 
     boxes = rois[:, 1:5] / im_scales[0]
     if cfg.TEST.BBOX_REG:
