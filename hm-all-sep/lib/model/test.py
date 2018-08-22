@@ -96,6 +96,9 @@ def im_detect(sess, net, im):
 
     _, scores, bbox_pred, rois, _, scores_hm, bbox_pred_hm = net.test_image(sess, blobs['data'], blobs['im_info'])
 
+    for i in range(300):
+      print(scores[i, 1], scores_hm[i, 1])
+
     boxes = rois[:, 1:5] / im_scales[0]
     if cfg.TEST.BBOX_REG:
       # Apply bounding-box regression deltas
