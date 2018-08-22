@@ -499,12 +499,15 @@ class Network(object):
   def test_image(self, sess, image, im_info):
     feed_dict = {self._image: image,
                  self._im_info: im_info}
-    cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
+    cls_score, cls_prob, bbox_pred, rois, cls_score_hm, cls_prob_hm, bbox_pred_hm = sess.run([self._predictions["cls_score"],
                                                      self._predictions['cls_prob'],
                                                      self._predictions['bbox_pred'],
                                                      self._predictions['rois']],
-                                                    feed_dict=feed_dict)
-    return cls_score, cls_prob, bbox_pred, rois
+                                                     self._predictions["cls_score_hm"],
+                                                     self._predictions["cls_prob_hm"],
+                                                     self._predictions["bbox_pred_hm"]
+                                                     feed_dict=feed_dict)
+    return cls_score, cls_prob, bbox_pred, rois, cls_score_hm, cls_prob_hm, bbox_pred_hm
 
   def get_summary(self, sess, blobs):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
@@ -524,7 +527,7 @@ class Network(object):
                                                                         self._losses['loss_box_people'],
                                                                         self._losses['total_loss'],
                                                                         train_op],
-                                                                       feed_dict=feed_dict)
+                                                                        feed_dict=feed_dict)
     return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_cls_people, loss_box_people, loss
 
   def train_step_with_summary(self, sess, blobs, train_op):

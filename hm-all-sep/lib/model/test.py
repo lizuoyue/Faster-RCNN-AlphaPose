@@ -94,9 +94,12 @@ def im_detect(sess, net, im):
     im_blob = blobs['data']
     blobs['im_info'] = np.array([im_blob.shape[1], im_blob.shape[2], im_scales[0]], dtype=np.float32)
 
-    _, scores, bbox_pred, rois = net.test_image(sess, blobs['data'], blobs['im_info'])
+    _, scores, bbox_pred, rois, _, scores_hm, bbox_pred_hm = net.test_image(sess, blobs['data'], blobs['im_info'])
     
     boxes = rois[:, 1:5] / im_scales[0]
+    print(scores.shape)
+    print(scores_hm.shape)
+    quit()
     scores = np.reshape(scores, [scores.shape[0], -1])
     bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1])
     if cfg.TEST.BBOX_REG:
@@ -104,6 +107,9 @@ def im_detect(sess, net, im):
       box_deltas = bbox_pred
       pred_boxes = bbox_transform_inv(boxes, box_deltas)
       pred_boxes = _clip_boxes(pred_boxes, im.shape)
+
+      pred_boxes_hm = bbox_transform_inv(boxes, bbox_pred_hm)
+      pred_boxes_hm = _clip_boxes(pred_boxes_hm, im.shape)
     else:
       # Simply repeat the boxes, once for each class
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
@@ -122,7 +128,7 @@ def im_detect_fast(sess, net, im):
     im_blob = blobs['data']
     blobs['im_info'] = np.array([im_blob.shape[1], im_blob.shape[2], im_scales[0]], dtype=np.float32)
 
-    _, scores, bbox_pred, rois = net.test_image(sess, blobs['data'], blobs['im_info'])
+    _, scores, bbox_pred, rois, cls_score_hm, cls_prob_hm, bbox_pred_hm = net.test_image(sess, blobs['data'], blobs['im_info'])
     
     boxes = rois[:, 1:5] / im_scales[0]
     scores = np.reshape(scores, [scores.shape[0], -1])
