@@ -505,7 +505,7 @@ class Network(object):
                                                      self._predictions['rois']],
                                                      self._predictions["cls_score_hm"],
                                                      self._predictions["cls_prob_hm"],
-                                                     self._predictions["bbox_pred_hm"]
+                                                     self._predictions["bbox_pred_hm"],
                                                      feed_dict=feed_dict)
     return cls_score, cls_prob, bbox_pred, rois, cls_score_hm, cls_prob_hm, bbox_pred_hm
 
