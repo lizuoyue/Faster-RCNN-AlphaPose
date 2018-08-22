@@ -96,10 +96,6 @@ def im_detect(sess, net, im):
 
     _, scores, bbox_pred, rois, _, scores_hm, bbox_pred_hm = net.test_image(sess, blobs['data'], blobs['im_info'])
 
-    # assert(scores.shape[0] == scores_hm.shape[0])
-    # for i in range(scores.shape[0]):
-    #   print(scores[i, 1], scores_hm[i, 1])
-
     boxes = rois[:, 1:5] / im_scales[0]
     if cfg.TEST.BBOX_REG:
       # Apply bounding-box regression deltas
@@ -113,8 +109,17 @@ def im_detect(sess, net, im):
       # Simply repeat the boxes, once for each class
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
 
+    ####### 1. Additional box with diff scores
     finalscores.extend([scores[:, :2], scores_hm])
-    finalpredboxes.extend([pred_boxes[:, :8], pred_boxes_hm])
+    finalpredboxes.extend([pred_boxes[:, :8], pred_boxes[:, :8]])
+
+    ####### 2. Arithmetic mean
+    # finalscores.extend([(scores[:, :2] + scores_hm) / 2])
+    # finalpredboxes.extend([pred_boxes[:, :8]])
+
+    ####### 3. Geometrical mean
+    # finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
+    # finalpredboxes.extend([pred_boxes[:, :8]])
 
   return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
