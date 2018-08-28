@@ -36,11 +36,13 @@ if __name__ == '__main__':
 	gtCoco = COCO('../../coco2017data/annotations/instances_val2017.json')
 	dtCoco = gtCoco.loadRes(res)
 	cocoEval = COCOeval(gtCoco, dtCoco, 'bbox')
-	# cocoEval.params.imgIds = list(set(imgIds))
 	cocoEval.evaluate()
 	cocoEval.params.catIds = [1]
+	cocoEval.params.imgIds = list(set(imgIds))
 	cocoEval.accumulate()
 	cocoEval.summarize()
+	print(len(set(imgIds)))
+	print(set(imgIds))
 	quit()
 
 	d = {}
