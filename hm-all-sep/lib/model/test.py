@@ -111,7 +111,8 @@ def im_detect(sess, net, im):
 
     ####### 1. Additional box with diff scores
     finalscores.extend([scores[:, :2], scores_hm])
-    finalpredboxes.extend([pred_boxes[:, :8], pred_boxes[:, :8]])
+    # finalpredboxes.extend([pred_boxes[:, :8], pred_boxes[:, :8]])
+    finalpredboxes.extend([pred_boxes[:, :8], pred_boxes_hm[:, :8]])
 
     ####### 2. Arithmetic mean
     # finalscores.extend([(scores[:, :2] + scores_hm) / 2])
