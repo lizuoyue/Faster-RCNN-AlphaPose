@@ -116,7 +116,8 @@ def im_detect(sess, net, im):
 
     ####### 2. Arithmetic mean
     finalscores.extend([(scores[:, :2] + scores_hm) / 2])
-    finalpredboxes.extend([pred_boxes[:, :8]])
+    # finalpredboxes.extend([pred_boxes[:, :8]])
+    finalpredboxes.extend([pred_boxes_hm[:, :8]])
 
     ####### 3. Geometrical mean
     # finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
