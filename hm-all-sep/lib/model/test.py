@@ -110,16 +110,16 @@ def im_detect(sess, net, im):
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
 
     ####### 1. Additional box with diff scores
-    # finalscores.extend([scores[:, :2], scores_hm])
-    # finalpredboxes.extend([pred_boxes[:, :8], pred_boxes[:, :8]])
+    finalscores.extend([scores[:, :2], scores_hm])
+    finalpredboxes.extend([pred_boxes[:, :8], pred_boxes[:, :8]])
 
     ####### 2. Arithmetic mean
     # finalscores.extend([(scores[:, :2] + scores_hm) / 2])
     # finalpredboxes.extend([pred_boxes[:, :8]])
 
     ####### 3. Geometrical mean
-    finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
-    finalpredboxes.extend([pred_boxes[:, :8]])
+    # finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
+    # finalpredboxes.extend([pred_boxes[:, :8]])
 
   return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
