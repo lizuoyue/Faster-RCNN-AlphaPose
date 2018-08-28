@@ -126,7 +126,7 @@ def im_detect(sess, net, im):
 
     ####### 4. Harmonic mean
     finalscores.extend([2 * scores[:, :2] * scores_hm / (scores[:, :2] + scores_hm + 1e-9)])
-    finalpredboxes.extend([pred_boxes[:, :8]])
+    finalpredboxes.extend([(pred_boxes[:, :8] + pred_boxes_hm[:, :8]) / 2])
 
   return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
