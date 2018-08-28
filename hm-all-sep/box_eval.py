@@ -38,6 +38,7 @@ if __name__ == '__main__':
 	cocoEval = COCOeval(gtCoco, dtCoco, 'bbox')
 	cocoEval.evaluate()
 	cocoEval.params.catIds = [1]
+	cocoEval.params.imgIds = list(set(imgIds))
 	cocoEval.accumulate()
 	cocoEval.summarize()
 	quit()
