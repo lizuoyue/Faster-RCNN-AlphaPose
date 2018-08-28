@@ -109,6 +109,9 @@ def im_detect(sess, net, im):
       # Simply repeat the boxes, once for each class
       pred_boxes = np.tile(boxes, (1, scores.shape[1]))
 
+    finalscores.extend([scores[:, :2]])
+    finalpredboxes.extend([pred_boxes[:, :8]])
+
     ####### 1. Additional box with diff scores
     # finalscores.extend([scores[:, :2], scores_hm])
     # finalpredboxes.extend([pred_boxes[:, :8], pred_boxes[:, :8]])
@@ -125,8 +128,8 @@ def im_detect(sess, net, im):
     # finalpredboxes.extend([pred_boxes_hm[:, :8]])
 
     ####### 4. Harmonic mean
-    finalscores.extend([2 * scores[:, :2] * scores_hm / (scores[:, :2] + scores_hm + 1e-9)])
-    finalpredboxes.extend([(pred_boxes[:, :8] + pred_boxes_hm[:, :8]) / 2])
+    # finalscores.extend([2 * scores[:, :2] * scores_hm / (scores[:, :2] + scores_hm + 1e-9)])
+    # finalpredboxes.extend([(pred_boxes[:, :8] + pred_boxes_hm[:, :8]) / 2])
 
   return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
