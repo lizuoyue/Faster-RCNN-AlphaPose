@@ -37,7 +37,7 @@ if __name__ == '__main__':
 	dtCoco = gtCoco.loadRes(res)
 	cocoEval = COCOeval(gtCoco, dtCoco, 'bbox')
 	cocoEval.params.catIds = [1]
-	cocoEval.params.imgIds = list(set(imgIds))
+	# cocoEval.params.imgIds = list(set(imgIds))
 	cocoEval.evaluate()
 	cocoEval.accumulate()
 	cocoEval.summarize()
