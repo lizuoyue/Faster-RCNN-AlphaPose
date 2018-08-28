@@ -121,7 +121,12 @@ def im_detect(sess, net, im):
 
     ####### 3. Geometrical mean
     finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
-    finalpredboxes.extend([pred_boxes[:, :8]])
+    # finalpredboxes.extend([pred_boxes[:, :8]])
+    finalpredboxes.extend([pred_boxes_hm[:, :8]])
+
+    ####### 3. Geometrical mean
+    # finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
+    # finalpredboxes.extend([pred_boxes[:, :8]])
 
   return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
