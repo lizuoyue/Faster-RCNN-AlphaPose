@@ -120,13 +120,13 @@ def im_detect(sess, net, im):
     # finalpredboxes.extend([pred_boxes_hm[:, :8]])
 
     ####### 3. Geometrical mean
-    finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
-    # finalpredboxes.extend([pred_boxes[:, :8]])
-    finalpredboxes.extend([pred_boxes_hm[:, :8]])
-
-    ####### 3. Geometrical mean
     # finalscores.extend([np.sqrt(scores[:, :2] * scores_hm)])
     # finalpredboxes.extend([pred_boxes[:, :8]])
+    # finalpredboxes.extend([pred_boxes_hm[:, :8]])
+
+    ####### 4. Harmonic mean
+    finalscores.extend([2 * scores[:, :2] * scores_hm / (scores[:, :2] + scores_hm + 1e-9)])
+    finalpredboxes.extend([pred_boxes[:, :8]])
 
   return np.concatenate(finalscores), np.concatenate(finalpredboxes)
 
