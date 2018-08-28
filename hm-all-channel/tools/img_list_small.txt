@@ -38,3 +38,13 @@
 /disks/data4/zyli/coco2017data/val2017/000000032901.jpg
 /disks/data4/zyli/coco2017data/val2017/000000243204.jpg
 /disks/data4/zyli/coco2017data/val2017/000000318908.jpg
+/disks/data4/zyli/coco2017data/val2017/000000347693.jpg
+/disks/data4/zyli/coco2017data/val2017/000000322163.jpg
+/disks/data4/zyli/coco2017data/val2017/000000451308.jpg
+/disks/data4/zyli/coco2017data/val2017/000000472375.jpg
+/disks/data4/zyli/coco2017data/val2017/000000252219.jpg
+/disks/data4/zyli/coco2017data/val2017/000000314264.jpg
+/disks/data4/zyli/coco2017data/val2017/000000376856.jpg
+/disks/data4/zyli/coco2017data/val2017/000000335081.jpg
+/disks/data4/zyli/coco2017data/val2017/000000311081.jpg
+/disks/data4/zyli/coco2017data/val2017/000000485802.jpg
