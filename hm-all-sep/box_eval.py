@@ -33,16 +33,17 @@ if __name__ == '__main__':
 	# # res = [res_ann for res_ann, box_score in zip(res_anns, box_scores) if box_score[3] > 0.2]
 	# print(len(res))
 
+	imgIds = list(set(imgIds))
+
 	gtCoco = COCO('../../coco2017data/annotations/instances_val2017.json')
 	dtCoco = gtCoco.loadRes(res)
 	cocoEval = COCOeval(gtCoco, dtCoco, 'bbox')
-	cocoEval.evaluate()
+	cocoEval.params.imgIds = [item for item in sorted(cocoGt.getImgIds()) if item in imgIds]
 	cocoEval.params.catIds = [1]
-	cocoEval.params.imgIds = list(set(imgIds))
+	cocoEval.evaluate()
 	cocoEval.accumulate()
 	cocoEval.summarize()
-	print(len(set(imgIds)))
-	print(set(imgIds))
+
 	quit()
 
 	d = {}
