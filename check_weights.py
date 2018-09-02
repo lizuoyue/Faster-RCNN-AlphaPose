@@ -12,4 +12,4 @@ d2 = read_tensorflow_weights('hm-all-sep/output/res152/coco_2017_train/default/r
 for var in d1:
 	if not var.endswith('Momentum'):
 		assert(var in d2)
-		print(np.sum(d2[var] - d1[var]), var)
+		print(np.sum(np.abs(d2[var] - d1[var])), var)
