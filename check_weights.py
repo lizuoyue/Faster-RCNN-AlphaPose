@@ -10,5 +10,6 @@ d1 = read_tensorflow_weights('human-detection/output/res152/coco_2017_train/defa
 d2 = read_tensorflow_weights('hm-all-sep/output/res152/coco_2017_train/default/res152_faster_rcnn_iter_900000.ckpt')
 
 for var in d1:
-	print(var)
-	assert(var in d2)
+	if not var.endswith('Momentum'):
+		print(var)
+		assert(var in d2)
