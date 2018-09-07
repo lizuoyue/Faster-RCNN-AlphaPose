@@ -8,7 +8,7 @@
 #### Mask R-CNN
 ### Bottom Up
 #### Realtime Multi-person Pose Estimation
-#### DeepCut
+#### DeepCut/DeeperCut
 ### Comparison and Analysis
 ### Motivation
 ## Model
